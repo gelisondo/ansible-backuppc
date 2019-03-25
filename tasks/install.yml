@@ -7,11 +7,24 @@
     - fcgiwrap
     - libfile-rsyncp-perl
     - ohai
+    - python-passlib
   register: install
 
 - name: SETUP | with ohai
   action: setup
   when: install.changed
+
+- name: crear usuario backuppc
+  htpasswd:
+    path: /etc/backuppc/htpasswd
+    name: backuppc
+    password: "{{ backuppc_web_password }}"
+    owner: root
+    group: www-data
+    mode: 0640
+
+- pause:
+    seconds: 10
 
 - name: USER | Create SSH key for backuppc user
   user: >

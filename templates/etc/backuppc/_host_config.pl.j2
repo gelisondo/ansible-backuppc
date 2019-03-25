@@ -28,6 +28,10 @@ $Conf{XferMethod} = '{{ item.xfermethod | default("rsync") }}';
 
 $Conf{ClientCharsetLegacy} = 'utf-8';
 
+$Conf{DumpPreUserCmd} = '{{ backuppc_pre_dump }}';
+
+$Conf{DumpPostUserCmd} = '{{ backuppc_post_dump }}';
+
 {% if item.more is defined %}
 # More options...
 {% for key, value in item.more.iteritems() %}

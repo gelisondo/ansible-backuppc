@@ -3,3 +3,6 @@
 - name: restart backuppc
   action: service name=backuppc state=restarted enabled=yes
 
+- name: restart apache2
+  action: service name=apache2 state=restarted enabled=yes
+

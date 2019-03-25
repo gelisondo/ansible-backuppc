@@ -1,0 +1,57 @@
+---
+
+- name: Instalar Rsync
+  apt:
+    name: rsync
+    state: present
+ 
+- name: create user
+  user:
+    name: backuppc
+    home: /home/backuppc
+    shell: /bin/bash
+
+- name: create dir
+  file:
+    path: /home/backuppc/.ssh
+    state: directory
+    owner: backuppc
+    group: backuppc
+    mode: 0744
+
+
+- name: Check if Service Exists
+  stat: path=/etc/init.d/mysql
+  register: register
+
+- name: Set user privileges
+  mysql_user:
+    login_user: root
+    login_password: "{{ vault_root_pass_mysql }}"
+    user: "{{ mysql_user }}"
+    password: "{{ vault_root_pass_mysql }}"
+    state: present
+    priv: '*.*:ALL,GRANT'
+    #priv: 'somedatabase.*:ALL/someotherdatabase.*:ALL/*.*:SUPER,RELOAD,SHOW DATABASES'
+  when: register.stat.exists != false
+
+- name: copiar bash de respaldo
+  sudo: yes
+  copy:
+    src: "{{ playbook_dir }}/host_vars/{{ inventory_hostname}}/files/respaldo.sh"
+    dest: /home/backuppc/respaldo.sh
+    owner: backuppc
+    group: backuppc
+    mode: 0766
+  when: register.stat.exists != false and backup_dump == true
+
+- name: copiar bash de delete_respaldo
+  sudo: yes
+  copy:
+    src: "{{ playbook_dir }}/host_vars/{{ inventory_hostname}}/files/delete_respaldo.sh"
+    dest: /home/backuppc/delete_respaldo.sh
+    owner: backuppc
+    group: backuppc
+    mode: 0766
+  when: register.stat.exists != false and backup_dump == true
+

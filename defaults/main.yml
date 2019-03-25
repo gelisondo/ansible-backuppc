@@ -21,6 +21,6 @@ backuppc_PingMaxMsec: 200
 backuppc_XferLogLevel: 1
 
 # Rsync
-backuppc_RsyncClientCmd: '$sshPath -q -x -l root $host $rsyncPath $argList+'
-backuppc_RsyncClientRestoreCmd: '$sshPath -q -x -l root $host $rsyncPath $argList+'
+backuppc_RsyncClientCmd: '$sshPath -q -x -l backuppc $host $rsyncPath $argList+'
+backuppc_RsyncClientRestoreCmd: '$sshPath -q -x -l backuppc $host $rsyncPath $argList+'
 
