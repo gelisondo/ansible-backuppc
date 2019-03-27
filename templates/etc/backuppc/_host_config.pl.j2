@@ -28,9 +28,13 @@ $Conf{XferMethod} = '{{ item.xfermethod | default("rsync") }}';
 
 $Conf{ClientCharsetLegacy} = 'utf-8';
 
+{% if item in groups.seciu_backup_dump %}
+
 $Conf{DumpPreUserCmd} = '{{ backuppc_pre_dump }}';
 
 $Conf{DumpPostUserCmd} = '{{ backuppc_post_dump }}';
+
+{% endif %}
 
 {% if item.more is defined %}
 # More options...

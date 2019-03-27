@@ -5,24 +5,38 @@
     name: rsync
     state: present
  
-- name: create user
+- name: Create user
   user:
     name: backuppc
-    home: /home/backuppc
+    home: /var/lib/backuppc
     shell: /bin/bash
 
-- name: create dir
+- name: Create dir
   file:
-    path: /home/backuppc/.ssh
+    path: /var/lib/backuppc/.ssh
     state: directory
     owner: backuppc
     group: backuppc
     mode: 0744
 
-
 - name: Check if Service Exists
   stat: path=/etc/init.d/mysql
   register: register
+
+- name: Install MySQL-Python  module
+  apt: name=python-mysqldb state=present
+  when: register.stat.exists != false
+
+- name: Empty file /etc/my.cnf
+  shell: cat /dev/null > /etc/my.cnf
+
+- name: LINEINFILE | Add access to mysql 
+  lineinfile: >
+    dest=/etc/my.cnf
+    line="[client] \n user={{mysql_user}} \n password={{vault_root_pass_mysql}} \n port=3306 \n host=localhost"
+    regexp="^user=backuppc"
+    state={{'present'}}
+  when: register.stat.exists != false
 
 - name: Set user privileges
   mysql_user:
@@ -39,19 +53,20 @@
   sudo: yes
   copy:
     src: "{{ playbook_dir }}/host_vars/{{ inventory_hostname}}/files/respaldo.sh"
-    dest: /home/backuppc/respaldo.sh
+    dest: /var/lib/backuppc/respaldo.sh
+
     owner: backuppc
     group: backuppc
     mode: 0766
-  when: register.stat.exists != false and backup_dump == true
+  when: register.stat.exists != false and inventory_hostname in groups.seciu_backup_dump
 
 - name: copiar bash de delete_respaldo
   sudo: yes
   copy:
     src: "{{ playbook_dir }}/host_vars/{{ inventory_hostname}}/files/delete_respaldo.sh"
-    dest: /home/backuppc/delete_respaldo.sh
+    dest: /var/lib/backuppc/delete_respaldo.sh
     owner: backuppc
     group: backuppc
     mode: 0766
-  when: register.stat.exists != false and backup_dump == true
+  when: register.stat.exists != false and inventory_hostname in groups.seciu_backup_dump
 

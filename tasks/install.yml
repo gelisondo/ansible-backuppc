@@ -23,9 +23,6 @@
     group: www-data
     mode: 0640
 
-- pause:
-    seconds: 10
-
 - name: USER | Create SSH key for backuppc user
   user: >
     name=backuppc
