@@ -17,13 +17,13 @@
     owner=backuppc
     group=www-data
     mode=0644
-  with_items: "{{ groups['seciu_backup'] }}"
+  with_items: "{{ hostname }}"
   when: item.state is not defined or item.state == 'present'
   notify: restart backuppc
 
 - name: FILE | Delete config if needed
   file: path='/etc/backuppc/{{ item }}.pl' state=absent
-  with_items: "{{ groups['seciu_backup'] }}"
+  with_items: "{{ hostname_backup }}"
   when: item.state is defined and item.state == 'absent'
   notify: restart backuppc
 
@@ -33,5 +33,5 @@
     line="{{ item }}\t0\tbackuppc"
     regexp="^{{ item }}"
     state={{ item.state if item.state is defined else 'present' }}
-  with_items: "{{ groups['seciu_backup'] }}"
+  with_items: "{{ hostname_backup }}"
   notify: restart backuppc

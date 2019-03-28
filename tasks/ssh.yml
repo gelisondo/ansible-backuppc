@@ -12,7 +12,14 @@
     state: present
     key: "{{ cat.stdout }}"
   delegate_to: "{{ item }}"
-  with_items: "{{ groups['seciu_backup'] }}"
+  with_items: "{{ hostname_backup }}"
+
+- name: Empty file /etc/my.cnf
+  shell: cat /dev/null > /var/lib/backuppc/.ssh/known_hosts
+
+- name: Add host to known_hosts
+  shell: "ssh-keyscan -H {{ item }} >> /var/lib/backuppc/.ssh/known_hosts"
+  with_items: "{{ hostname_backup }}"
 
 - name: DEBUG | SSH pub key
   debug: var=cat.stdout

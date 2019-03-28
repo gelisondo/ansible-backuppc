@@ -25,6 +25,11 @@ Role Variables
 - `backuppc_fetch_ssh_key`: copy backkupc ssh key from server (boolean)
 - `backuppc_local_fetch_dir`: local dir where you fetch backuppc SSH public key
 - `backuppc_hosts`: clients list to backup (see below)
+- `mysql_user`: user from mysql
+- `backuppc_pre_dump`: script that backup databases (ssh $host ./respaldo.sh)
+- `backuppc_post_dump`: script that delete .tar.gz in machine copied ('ssh $host ./delete_respaldo.sh')
+- `hostname_backup`: hostname of the host (groups['backup'])
+- `hostname_dump`: hostname of the host with databases mysql (groups['backup_dump'])
 
 ### Client vars
 
@@ -37,7 +42,7 @@ Each client configuration override global configuration.
 - `xfermethod`: (O) transfer method (rsync as default)
 - `more`: (O) hash with specific key/value (usefull for custom directives)
 
-(O): Optional (M): Mandatory
+(O): Optional
 
 
 ### Global configuration

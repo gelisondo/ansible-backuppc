@@ -11,6 +11,11 @@ $Conf{BackupFilesOnly} = {
 {% endfor %}
 	]
 };
+
+#{% else %}
+
+#$Conf{BackupFilesOnly} = {'*' => ['/var/lib']};
+
 {% endif %}
 
 {% if item.exclude_files is defined %}
@@ -28,7 +33,7 @@ $Conf{XferMethod} = '{{ item.xfermethod | default("rsync") }}';
 
 $Conf{ClientCharsetLegacy} = 'utf-8';
 
-{% if item in groups.seciu_backup_dump %}
+{% if item in hostname_dump %}
 
 $Conf{DumpPreUserCmd} = '{{ backuppc_pre_dump }}';
 

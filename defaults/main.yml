@@ -4,6 +4,11 @@ backuppc_server_name: "{{ ansible_hostname }}"
 backuppc_fetch_ssh_key: false
 backuppc_local_fetch_dir: "./fetch"
 backuppc_hosts: []
+mysql_user: backuppc
+backuppc_pre_dump: ''
+backuppc_post_dump: ''
+hostname: []
+hostname_dump: []
 
 #
 # Global configuration
@@ -21,6 +26,6 @@ backuppc_PingMaxMsec: 200
 backuppc_XferLogLevel: 1
 
 # Rsync
-backuppc_RsyncClientCmd: '$sshPath -q -x -l backuppc $host $rsyncPath $argList+'
-backuppc_RsyncClientRestoreCmd: '$sshPath -q -x -l backuppc $host $rsyncPath $argList+'
+backuppc_RsyncClientCmd: '$sshPath -q -x -l {{mysql_user}} $host $rsyncPath $argList+'
+backuppc_RsyncClientRestoreCmd: '$sshPath -q -x -l {{mysql_user}} $host $rsyncPath $argList+'
 
