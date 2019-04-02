@@ -51,21 +51,20 @@
 - name: Copy bash to backup
   sudo: yes
   copy:
-    src: "{{ playbook_dir }}/host_vars/{{ inventory_hostname}}/files/respaldo.sh"
+    src: "{{ playbook_dir }}/host_vars/{{ inventory_hostname }}/files/respaldo.sh"
     dest: /var/lib/backuppc/respaldo.sh
-
     owner: backuppc
     group: backuppc
     mode: 0766
-  when: register.stat.exists != false and inventory_hostname in groups.seciu_backup_dump
+  when: register.stat.exists != false and mysql_dump == true
 
 - name: Copy bash to delete_backup
   sudo: yes
   copy:
-    src: "{{ playbook_dir }}/host_vars/{{ inventory_hostname}}/files/delete_respaldo.sh"
-    dest: /var/lib/backuppc/delete_respaldo.sh
+    src: "{{ playbook_dir }}/host_vars/{{ inventory_hostname}}/files/end_respaldo.sh"
+    dest: /var/lib/backuppc/end_respaldo.sh
     owner: backuppc
     group: backuppc
     mode: 0766
-  when: register.stat.exists != false and inventory_hostname in groups.seciu_backup_dump
+  when: register.stat.exists != false and mysql_dump == true
 

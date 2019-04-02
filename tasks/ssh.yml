@@ -1,9 +1,10 @@
 ---
 
 - name: COMMAND | Show SSH pub key
-  command: "cat {{ ohai_etc.passwd.backuppc.dir }}/.ssh/id_rsa.pub"
+  command: "cat {{ backuppc_local_fetch_dir }}/.ssh/id_rsa.pub"
   register: cat
   changed_when: false
+  delegate_to: "{{backuppc_server_name}}"
 
 - name: Add SSH pub key for hosts
   sudo: yes
@@ -11,15 +12,13 @@
     user: backuppc
     state: present
     key: "{{ cat.stdout }}"
-  delegate_to: "{{ item }}"
-  with_items: "{{ hostname_backup }}"
+  delegate_to: "{{ inventory_hostname }}"
 
 - name: Empty file /etc/my.cnf
   shell: cat /dev/null > /var/lib/backuppc/.ssh/known_hosts
+  delegate_to: "{{ inventory_hostname }}"
 
 - name: Add host to known_hosts
   shell: "ssh-keyscan -H {{ item }} >> /var/lib/backuppc/.ssh/known_hosts"
-  with_items: "{{ hostname_backup }}"
-
-- name: DEBUG | SSH pub key
-  debug: var=cat.stdout
+  with_items: "{{ groups['seciu_backup'] }}"
+  delegate_to: "{{ inventory_hostname }}"

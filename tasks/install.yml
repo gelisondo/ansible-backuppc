@@ -29,3 +29,13 @@
     generate_ssh_key=yes
     ssh_key_bits={{ backuppc_ssh_key_bits | default (omit) }}
     ssh_key_comment=backuppc@{{ backuppc_server_name }}
+
+- name: TEMPLATE | Global BackupPC configuration
+  template: >
+    src=etc/backuppc/config.pl.j2
+    dest='/etc/backuppc/config.pl'
+    owner=backuppc
+    group=www-data
+    mode=0640
+  notify: restart backuppc
+  notify: restart apache2

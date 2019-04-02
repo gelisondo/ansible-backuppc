@@ -2,26 +2,21 @@
 # {{ ansible_managed }}
 #
 
-{% if item.include_files is defined %}
-$Conf{BackupFilesOnly} = {
-	'*' => [
-{% for item in item.include_files %}
-		'{{ item }}'{% if not loop.last %},{% endif %}
+{% if include_files is defined %}
+$Conf{BackupFilesOnly} = {'*' => [
 
+{% for item in include_files %}
+		'{{ item }}'{% if not loop.last %},{% endif %}
 {% endfor %}
 	]
 };
 
-#{% else %}
-
-#$Conf{BackupFilesOnly} = {'*' => ['/var/lib']};
-
 {% endif %}
 
-{% if item.exclude_files is defined %}
+{% if exclude_files is defined %}
 $Conf{BackupFilesExclude} = {
 	'*' => [
-{% for item in item.exclude_files %}
+{% for item in exclude_files %}
 		'{{ item }}'{% if not loop.last %},{% endif %}
 
 {% endfor %}
@@ -29,11 +24,11 @@ $Conf{BackupFilesExclude} = {
 };
 {% endif %}
 
-$Conf{XferMethod} = '{{ item.xfermethod | default("rsync") }}';
+$Conf{XferMethod} = '{{ xfermethod | default("rsync") }}';
 
 $Conf{ClientCharsetLegacy} = 'utf-8';
 
-{% if item in hostname_dump %}
+{% if mysql_dump is defined and mysql_dump == true %}
 
 $Conf{DumpPreUserCmd} = '{{ backuppc_pre_dump }}';
 
@@ -41,9 +36,9 @@ $Conf{DumpPostUserCmd} = '{{ backuppc_post_dump }}';
 
 {% endif %}
 
-{% if item.more is defined %}
+{% if more is defined %}
 # More options...
-{% for key, value in item.more.iteritems() %}
+{% for key, value in more.iteritems() %}
 {% if value is string %}
 $Conf{{ '{' }}{{ key }}{{ '}' }} = '{{ value }}';
 {% else %}

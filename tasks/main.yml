@@ -4,16 +4,14 @@
   include: install.yml
   when: inventory_hostname in groups.seciu_backuppc
 
-- name: INCLUDE | Configuration
-  include: config.yml
-  when: inventory_hostname in groups.seciu_backuppc
-
-- name: INCLUDE | SSH related configuration
-  include: ssh.yml
-  when: inventory_hostname in groups.seciu_backuppc
-
 - name: configuraciones varias para respaldos
   include_tasks: pc_backups.yml
   when: inventory_hostname in groups.seciu_backup
-  
-  #when: cielito_respaldado quitar esta variable
+
+- name: INCLUDE | Configuration
+  include: config.yml
+  when: inventory_hostname in groups.seciu_backup
+
+- name: INCLUDE | SSH related configuration
+  include: ssh.yml
+  when: inventory_hostname in groups.seciu_backup

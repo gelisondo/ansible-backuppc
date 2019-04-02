@@ -1,37 +1,26 @@
 ---
 
-- name: TEMPLATE | Global BackupPC configuration
-  template: >
-    src=etc/backuppc/config.pl.j2
-    dest='/etc/backuppc/config.pl'
-    owner=backuppc
-    group=www-data
-    mode=0640
-  notify: restart backuppc
-  notify: restart apache2
-
 - name: TEMPLATE | Put host specific config on BackupPC server
   template: >
     src=etc/backuppc/_host_config.pl.j2
-    dest='/etc/backuppc/{{ item }}.pl'
+    dest='/etc/backuppc/{{ inventory_hostname }}.pl'
     owner=backuppc
     group=www-data
     mode=0644
-  with_items: "{{ hostname }}"
-  when: item.state is not defined or item.state == 'present'
+  delegate_to: "{{backuppc_server_name}}"
+  when: backup_state is not defined or backup_state == 'present'
   notify: restart backuppc
 
 - name: FILE | Delete config if needed
-  file: path='/etc/backuppc/{{ item }}.pl' state=absent
-  with_items: "{{ hostname_backup }}"
-  when: item.state is defined and item.state == 'absent'
+  file: path='/etc/backuppc/{{ inventory_hostname }}.pl' state=absent
+  delegate_to: "{{backuppc_server_name}}"
+  when: backup_state is defined and backup_state == 'absent'
   notify: restart backuppc
 
 - name: LINEINFILE | Add host to BackupPC server
   lineinfile: >
     dest=/etc/backuppc/hosts
-    line="{{ item }}\t0\tbackuppc"
-    regexp="^{{ item }}"
-    state={{ item.state if item.state is defined else 'present' }}
-  with_items: "{{ hostname_backup }}"
-  notify: restart backuppc
+    line="{{ inventory_hostname }}\t0\tbackuppc"
+    regexp="^{{ inventory_hostname }}"
+    state={{ backup_state if backup_state is defined else 'present' }}
+  delegate_to: "{{backuppc_server_name}}"
