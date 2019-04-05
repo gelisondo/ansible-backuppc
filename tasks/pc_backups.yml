@@ -19,7 +19,8 @@
     group: backuppc
     mode: 0744
 
-- name: Check if Service Exists
+#chequear el servicio mysql
+- name: Check if Service Exists 
   stat: path=/etc/init.d/mysql
   register: register
 
@@ -27,6 +28,7 @@
   apt: name=python-mysqldb state=present
   when: register.stat.exists != false
 
+#ver de modificar y no borrar toda la conf
 - name: Empty file /etc/my.cnf
   shell: cat /dev/null > /etc/my.cnf
 
@@ -48,6 +50,7 @@
     priv: '*.*:ALL,GRANT'
   when: register.stat.exists != false
 
+#crear carpeta backup en files
 - name: Copy bash to backup
   sudo: yes
   copy:

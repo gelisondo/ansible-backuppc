@@ -2066,7 +2066,7 @@ $Conf{CgiURL} = 'http://jessie-amd64/backuppc/index.cgi';
 # Currently the Language setting applies to the CGI interface and email
 # messages sent to users.  Log files and other text are still in English.
 #
-$Conf{Language} = 'es';
+$Conf{Language} = '{{backuppc_language}}';
 
 #
 # User names that are rendered by the CGI interface can be turned
@@ -2097,7 +2097,7 @@ $Conf{CgiUserUrlCreate} = 'mailto:%s';
 # dates (MM/DD), a value of 2 uses full YYYY-MM-DD format, and zero
 # for international dates (DD/MM).
 #
-$Conf{CgiDateFormatMMDD} = 2;
+$Conf{CgiDateFormatMMDD} = '{{backuppc_Date_Format}}';
 
 #
 # If set, the complete list of hosts appears in the left navigation

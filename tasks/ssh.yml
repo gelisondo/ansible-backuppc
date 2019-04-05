@@ -14,11 +14,42 @@
     key: "{{ cat.stdout }}"
   delegate_to: "{{ inventory_hostname }}"
 
-- name: Empty file /etc/my.cnf
-  shell: cat /dev/null > /var/lib/backuppc/.ssh/known_hosts
-  delegate_to: "{{ inventory_hostname }}"
+# - name: Empty host to known_hosts
+#   shell: ssh-keygen -f "/var/lib/backuppc/.ssh/known_hosts" -R "{{ inventory_hostname }}"
+#   delegate_to: "{{ backuppc_server_name }}"
 
-- name: Add host to known_hosts
-  shell: "ssh-keyscan -H {{ item }} >> /var/lib/backuppc/.ssh/known_hosts"
-  with_items: "{{ groups['seciu_backup'] }}"
-  delegate_to: "{{ inventory_hostname }}"
+# - name: Add host to known_hosts
+#   shell: "ssh-keyscan -H {{ inventory_hostname }} >> /var/lib/backuppc/.ssh/known_hosts"
+#   delegate_to: "{{ backuppc_server_name }}"
+
+# - name: Read host to known_hosts
+#   tags: ver
+#   shell: "ssh-keyscan -H {{ inventory_hostname }}"
+#   register: ssh_from_backuppc
+#   delegate_to: "{{ backuppc_server_name }}"
+
+# - name: Add host to known_hosts
+#   tags: ya
+#   lineinfile: >
+#     dest=/var/lib/backuppc/.ssh/known_hosts
+#     line="{{ssh_from_backuppc.stdout}}"
+#     regexp="^user=backuppc"
+#     state={{'present'}}
+#   delegate_to: "{{ backuppc_server_name }}"
+
+# - name: Empty file /etc/my.cnf
+#   shell: cat /dev/null > /var/lib/backuppc/.ssh/known_hosts
+#   delegate_to: "{{ inventory_hostname }}"
+
+# - name: Add host to known_hosts
+#   shell: "ssh-keyscan -H {{ item }} >> /var/lib/backuppc/.ssh/known_hosts"
+#   with_items: "{{ groups['seciu_backup'] }}"
+#   delegate_to: "{{ inventory_hostname }}"
+
+# - name: Add host to known_hosts
+#   tags: aca
+#   shell: |
+#     su - backuppc
+#     ssh -q -x -l backuppc {{ inventory_hostname }}
+#   delegate_to: "{{ backuppc_server_name }}"
+

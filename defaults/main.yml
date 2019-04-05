@@ -9,6 +9,11 @@ backuppc_pre_dump: ''
 backuppc_post_dump: ''
 hostname: []
 hostname_dump: []
+include_files:
+  - /etc
+  - /var/lib
+  - /home
+  - /root
 
 #
 # Global configuration
@@ -26,6 +31,6 @@ backuppc_PingMaxMsec: 200
 backuppc_XferLogLevel: 1
 
 # Rsync
-backuppc_RsyncClientCmd: '$sshPath -q -x -l {{mysql_user}} $host $rsyncPath $argList+'
-backuppc_RsyncClientRestoreCmd: '$sshPath -q -x -l {{mysql_user}} $host $rsyncPath $argList+'
+backuppc_RsyncClientCmd: '$sshPath -q -x -l backuppc $host $rsyncPath $argList+'
+backuppc_RsyncClientRestoreCmd: '$sshPath -q -x -l backuppc $host $rsyncPath $argList+'
 
