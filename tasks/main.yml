@@ -4,8 +4,12 @@
   include: install.yml
   when: inventory_hostname in groups.seciu_backuppc
 
-- name: configuraciones varias para respaldos
+- name: config user mysql 
   include_tasks: pc_backups.yml
+  when: inventory_hostname in groups.seciu_backup and config_mysql
+
+- name: add file bash
+  include_tasks: copy_bash.yml
   when: inventory_hostname in groups.seciu_backup
 
 - name: INCLUDE | Configuration

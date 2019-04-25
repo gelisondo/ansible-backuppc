@@ -5,10 +5,13 @@ backuppc_fetch_ssh_key: false
 backuppc_local_fetch_dir: "./fetch"
 backuppc_hosts: []
 mysql_user: backuppc
+backup_mysql_dump: false
 backuppc_pre_dump: ''
 backuppc_post_dump: ''
 hostname: []
 hostname_dump: []
+config_mysql: false #esta variable habilita la instalacion y configuracion de mysql 
+                    # La idea es correrlo la primera vez y pasarla a false para que no se corra mas
 include_files:
   - /etc
   - /var/lib

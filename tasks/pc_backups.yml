@@ -1,4 +1,6 @@
 ---
+# Se corre la instalacion de todo lo requerido para respaldar los contenedores, se crea usuario mysql para respaldar las BD 
+# Asignamos permisos para el usuario mysql
 
 - name: Instalar Rsync
   apt:
@@ -17,25 +19,25 @@
     state: directory
     owner: backuppc
     group: backuppc
-    mode: 0744
+    mode: 0700
 
 - name: Check if Service Exists 
   stat: path=/etc/init.d/mysql
-  register: register
+  register: mysql_state
 
 - name: Start service mysql, if not started
   service:
     name: mysqld
     state: started
-  when: register.stat.exists != false
+  when: mysql_state.stat.exists != false
 
 - name: Install MySQL-Python  module
   apt: name=python-mysqldb state=present
-  when: register.stat.exists != false
+  when: mysql_state.stat.exists != false
 
 - name: Empty file /etc/my.cnf
   shell: cat /dev/null > /etc/mysql/conf.d/my.cnf
-  when: register.stat.exists != false
+  when: mysql_state.stat.exists != false
 
 - name: LINEINFILE | Add access to mysql 
   lineinfile: >
@@ -43,7 +45,7 @@
     line="[client] \n user={{mysql_user}} \n password={{vault_root_pass_mysql}} \n port=3306 \n host=localhost"
     regexp="^user=backuppc"
     state={{'present'}}
-  when: register.stat.exists != false
+  when: mysql_state.stat.exists != false
 
 - name: Set user privileges
   mysql_user:
@@ -53,25 +55,5 @@
     password: "{{ vault_root_pass_mysql }}"
     state: present
     priv: '*.*:ALL,GRANT'
-  when: register.stat.exists != false
-
-- name: Copy bash to backup
-  sudo: yes
-  copy:
-    src: "{{ playbook_dir }}/host_vars/{{ inventory_hostname }}/files/backuppc/respaldo.sh"
-    dest: /var/lib/backuppc/respaldo.sh
-    owner: backuppc
-    group: backuppc
-    mode: 0766
-  when: register.stat.exists != false and mysql_dump == true
-
-- name: Copy bash to delete_backup
-  sudo: yes
-  copy:
-    src: "{{ playbook_dir }}/host_vars/{{ inventory_hostname}}/files/backuppc/end_respaldo.sh"
-    dest: /var/lib/backuppc/end_respaldo.sh
-    owner: backuppc
-    group: backuppc
-    mode: 0766
-  when: register.stat.exists != false and mysql_dump == true
+  when: mysql_state.stat.exists != false
 
