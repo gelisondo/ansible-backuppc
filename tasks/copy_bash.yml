@@ -10,7 +10,7 @@
     owner: backuppc
     group: backuppc
     mode: 0766
-  when: mysql_state.stat.exists != false and mysql_dump == true
+  when: mysql_state.stat.exists != false and backup_mysql_dump == true
 
 - name: Copy bash to delete_backup
   sudo: yes
@@ -20,5 +20,5 @@
     owner: backuppc
     group: backuppc
     mode: 0766
-  when: mysql_state.stat.exists != false and mysql_dump == true
+  when: mysql_state.stat.exists != false and backup_mysql_dump == true
 
