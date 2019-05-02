@@ -20,7 +20,7 @@
 - name: LINEINFILE | Add host to BackupPC server
   lineinfile: >
     dest=/etc/backuppc/hosts
-    line="{{ inventory_hostname }}\t0\tbackuppc"
+    line="{{ inventory_hostname }}\t0\tbackuppc\t{{backup_local_users}}"
     regexp="^{{ inventory_hostname }}"
     state={{ backup_state if backup_state is defined else 'present' }}
   delegate_to: "{{backuppc_server_name}}"

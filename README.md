@@ -5,6 +5,13 @@ BackupPC Ansible role
 
 This role installs and configures Backuppc. It works on Debian Jessie. It can work on Ubuntu or other Debian-based systems. But no direct support will be added (PR accepted).
 
+Description
+------------
+
+This role has two functionalities:
+  * install backuppc (in the file hosts add the backuppc_group)
+  * add machine to the backups (in the file hosts add the backup_group)
+
 Requirements
 ------------
 
@@ -24,23 +31,26 @@ Role Variables
 - `backuppc_ssh_key_bits`: set length of ssh key pair (optional, default 2048 by Ansible)
 - `backuppc_fetch_ssh_key`: copy backkupc ssh key from server (boolean)
 - `backuppc_local_fetch_dir`: local dir where you fetch backuppc SSH public key
-- `backuppc_hosts`: clients list to backup (see below)
+- `backuppc_language`: web interface language
+- `backuppc_Date_Format`: date format of the web interface
 - `mysql_user`: user from mysql
-- `backuppc_pre_dump`: script that backup databases (ssh $host ./respaldo.sh)
-- `backuppc_post_dump`: script that delete .tar.gz in machine copied ('ssh $host ./delete_respaldo.sh')
-- `hostname_backup`: hostname of the host (groups['backup'])
-- `hostname_dump`: hostname of the host with databases mysql (groups['backup_dump'])
+- `backuppc_group`: group of the inventory that contains the backuppc
+- `backup_group`: inventory group that contains the containers to be backed
+
 
 ### Client vars
 
 Each client configuration override global configuration.
 
-- `hostname`: (M) hostname of the host
+- `users_backuppc`: Users with access to the backuppc web interface 
 - `state`: (O) absent or present (default)
 - `include_files:`: (O) default files (directories) list to backup.
 - `exclude_files:`: (O) default files (directories) list to exclude in backup
 - `xfermethod`: (O) transfer method (rsync as default)
 - `more`: (O) hash with specific key/value (usefull for custom directives)
+- `backup_mysql_dump`: determines if database backup is done (true/false)
+- `backup_config_mysql`: run the installation process (true/false)
+- `backup_local_users`: users who manage the backup ("user1,user2")
 
 (O): Optional
 
@@ -64,6 +74,7 @@ You should [RTFM](http://backuppc.sourceforge.net/faq/BackupPC.html) for these v
 - `backuppc_BackupFilesOnly`
 - `backuppc_BackupFilesExclude`
 - `backuppc_XferLogLevel`
+- `backuppc_language`
 
 Other global configuration can be managed (you can create issues or PR).
 
@@ -117,6 +128,14 @@ You should look at [defaults/main.yml](defaults/main.yml).
     - HanXHX.nginx
     - HanXHX.backuppc
 ```
+
+### With Apache2
+
+```
+  The management of the users is done by the role and the users have their assigned passwords which can be changed with:
+  htpasswd /etc/backuppc/htpasswd usuario
+```
+ 
 
 License
 -------

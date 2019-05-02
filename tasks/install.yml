@@ -17,11 +17,12 @@
 - name: crear usuario backuppc
   htpasswd:
     path: /etc/backuppc/htpasswd
-    name: backuppc
+    name: "{{ item }}"
     password: "{{ backuppc_web_password }}"
     owner: root
     group: www-data
     mode: 0640
+  with_items: "{{ users_backuppc }}"
 
 - name: USER | Create SSH key for backuppc user
   user: >

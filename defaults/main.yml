@@ -10,13 +10,21 @@ backuppc_pre_dump: ''
 backuppc_post_dump: ''
 hostname: []
 hostname_dump: []
-config_mysql: false #esta variable habilita la instalacion y configuracion de mysql 
+backup_config_mysql: false #esta variable habilita la instalacion y configuracion de mysql 
                     # La idea es correrlo la primera vez y pasarla a false para que no se corra mas
 include_files:
   - /etc
   - /var/lib
   - /home
   - /root
+
+# debe ir en las host_vars y le indica quienes tiene acceso por backuppc al contenedor
+backup_local_users: 'backuppc'
+
+# se carga el grupo al que pertenece el servidor de respaldos
+backuppc_group: '{{ groups.backuppc }}'
+# se carga el grupo de contenedores a respaldar
+backup_group: '{{ groups.backup }}'
 
 #
 # Global configuration
@@ -32,6 +40,9 @@ backuppc_FullPeriod: 6.97
 backuppc_IncrPeriod: 0.97
 backuppc_PingMaxMsec: 200
 backuppc_XferLogLevel: 1
+backuppc_language: 'en'
+users_backuppc: # usuarios habilitados para utilizar backuppc
+  - backuppc
 
 # Rsync
 backuppc_RsyncClientCmd: '$sshPath -q -x -l backuppc $host $rsyncPath $argList+'
