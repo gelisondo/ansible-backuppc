@@ -42,7 +42,10 @@ backuppc_PingMaxMsec: 200
 backuppc_XferLogLevel: 1
 backuppc_language: 'en'
 users_backuppc: # usuarios habilitados para utilizar backuppc
-  - backuppc
+  - name: backuppc
+    password: 'backuppc'
+  - name: user1
+    password: ''
 
 # Rsync
 backuppc_RsyncClientCmd: '$sshPath -q -x -l backuppc $host $rsyncPath $argList+'

@@ -17,8 +17,8 @@
 - name: crear usuario backuppc
   htpasswd:
     path: /etc/backuppc/htpasswd
-    name: "{{ item }}"
-    password: "{{ backuppc_web_password }}"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
     owner: root
     group: www-data
     mode: 0640
