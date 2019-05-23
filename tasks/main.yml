@@ -2,20 +2,3 @@
 
 - name: INCLUDE | Install
   include: install.yml
-  when: inventory_hostname in backuppc_group
-
-- name: config user mysql 
-  include_tasks: pc_backups.yml
-  when: inventory_hostname in backup_group and backup_config_mysql
-
-- name: add file bash
-  include_tasks: copy_bash.yml
-  when: inventory_hostname in backup_group
-
-- name: INCLUDE | Configuration
-  include: config.yml
-  when: inventory_hostname in backup_group
-
-- name: INCLUDE | SSH related configuration
-  include: ssh.yml
-  when: inventory_hostname in backup_group

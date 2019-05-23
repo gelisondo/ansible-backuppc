@@ -23,6 +23,7 @@
     group: www-data
     mode: 0640
   with_items: "{{ users_backuppc }}"
+  tags: create_users_backuppc
 
 - name: USER | Create SSH key for backuppc user
   user: >
