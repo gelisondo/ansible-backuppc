@@ -23,8 +23,6 @@ backup_local_users: 'backuppc'
 
 # se carga el grupo al que pertenece el servidor de respaldos
 backuppc_group: '{{ groups.backuppc }}'
-# se carga el grupo de contenedores a respaldar
-backup_group: '{{ groups.backup }}'
 
 #
 # Global configuration
@@ -44,8 +42,6 @@ backuppc_language: 'en'
 users_backuppc: # usuarios habilitados para utilizar backuppc
   - name: backuppc
     password: 'backuppc'
-  - name: user1
-    password: ''
 
 # Rsync
 backuppc_RsyncClientCmd: '$sshPath -q -x -l backuppc $host $rsyncPath $argList+'
