@@ -1,0 +1,20 @@
+<VirtualHost *:80>
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+</VirtualHost>
+
+<VirtualHost *:443>
+
+    SSLEngine on
+    SSLCertificateFile /etc/letsencrypt/live/tala.interior.edu.uy/cert.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/tala.interior.edu.uy/privkey.pem
+    SSLCaCertificatePath /etc/letsencrypt/live/tala.interior.edu.uy/
+
+    ServerAdmin webmaster@localhost
+    DocumentRoot /usr/share/backuppc/cgi-bin/
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>

@@ -1,0 +1,31 @@
+---
+
+- name: Add module
+  apache2_module:
+    state: present
+    name: "{{item}}"
+  with_items: 
+    - rewrite
+    - ssl
+    
+- name: Copy apache config
+  template:
+    dest: "/etc/apache2/sites-available/{{ backuppc_server_name }}.conf"
+    src: etc/apache/apache.conf.j2
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart apache2
+
+- name: Remove default apache2 site.
+  file:
+    path: /etc/apache2/sites-enabled/default
+    state: absent
+  notify: restart apache2
+
+- name: Activate custom Backuppc apache site.
+  file:
+    path: "/etc/apache2/sites-enabled/{{ backuppc_server_name }}.conf"
+    src: "/etc/apache2/sites-available/{{ backuppc_server_name }}.conf"
+    state: link
+  notify: restart apache2
