@@ -19,7 +19,7 @@
 
 - name: Remove default apache2 site.
   file:
-    path: /etc/apache2/sites-enabled/default
+    path: /etc/apache2/sites-enabled/000-default.conf
     state: absent
   notify: restart apache2
 

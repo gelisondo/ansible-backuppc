@@ -7,9 +7,8 @@
 <VirtualHost *:443>
 
     SSLEngine on
-    SSLCertificateFile /etc/letsencrypt/live/tala.interior.edu.uy/cert.pem
-    SSLCertificateKeyFile /etc/letsencrypt/live/tala.interior.edu.uy/privkey.pem
-    SSLCaCertificatePath /etc/letsencrypt/live/tala.interior.edu.uy/
+    SSLCertificateFile /etc/letsencrypt/live/{{backuppc_server_name}}/cert.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/{{backuppc_server_name}}/privkey.pem
 
     ServerAdmin webmaster@localhost
     DocumentRoot /usr/share/backuppc/cgi-bin/
