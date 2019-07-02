@@ -44,6 +44,6 @@ users_backuppc: # usuarios habilitados para utilizar backuppc
     password: 'backuppc'
 
 # Rsync
-backuppc_RsyncClientCmd: '$sshPath -q -x -l backuppc $host $rsyncPath $argList+'
-backuppc_RsyncClientRestoreCmd: '$sshPath -q -x -l backuppc $host $rsyncPath $argList+'
+backuppc_RsyncClientCmd: '$sshPath -q -x -l backuppc $host sudo $rsyncPath $argList+'
+backuppc_RsyncClientRestoreCmd: '$sshPath -q -x -l backuppc $host sudo $rsyncPath $argList+'
 
