@@ -1,5 +1,13 @@
 ---
 
+- name: Create symbolic link 
+  file:
+    src: "/mnt/datosBackuppc"
+    dest: "/var/lib/backuppc"
+    mode: 0644
+    state: link
+  tags: symbolic
+
 - name: APT | Install BackupPC and few related tools
   apt: pkg={{ item }} state=present update_cache=yes cache_valid_time=3600
   with_items:
@@ -42,3 +50,4 @@
   notify: 
   - restart backuppc
   - restart apache2
+
