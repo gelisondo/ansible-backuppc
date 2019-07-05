@@ -33,7 +33,7 @@ Role Variables
 - `backuppc_local_fetch_dir`: local dir where you fetch backuppc SSH public key
 - `backuppc_language`: web interface language
 - `backuppc_Date_Format`: date format of the web interface
-- `mysql_user`: user from mysql
+- `backuppc_mysql_user`: user from mysql
 - `backuppc_group`: group of the inventory that contains the backuppc
 - `backup_group`: inventory group that contains the containers to be backed
 

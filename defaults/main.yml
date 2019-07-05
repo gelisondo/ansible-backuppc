@@ -4,8 +4,6 @@ backuppc_server_name: "{{ ansible_hostname }}"
 backuppc_fetch_ssh_key: false
 backuppc_local_fetch_dir: "./fetch"
 backuppc_hosts: []
-mysql_user: backuppc
-backup_mysql_dump: false
 backuppc_pre_dump: ''
 backuppc_post_dump: ''
 hostname: []
