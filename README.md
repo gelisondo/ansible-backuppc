@@ -3,14 +3,16 @@ BackupPC Ansible role
 
 [![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-HanXHX.backuppc-blue.svg)](https://galaxy.ansible.com/HanXHX/backuppc) [![Build Status](https://travis-ci.org/HanXHX/ansible-backuppc.svg?branch=master)](https://travis-ci.org/HanXHX/ansible-nginx) 
 
-This role installs and configures Backuppc. It works on Debian Jessie. It can work on Ubuntu or other Debian-based systems. But no direct support will be added (PR accepted).
+This role installs and configures a Backuppc server. It works on Debian Jessie. It can work on Ubuntu or other Debian-based systems. But no direct support will be added (PR accepted).
 
 Description
 ------------
 
-This role has two functionalities:
-  * install backuppc (in the file hosts add the backuppc_group)
-  * add machine to the backups (in the file hosts add the backup_group)
+
+This role installs and configures a Backuppc server, including the ssh key of the backuppc user and the passwords of web backuppc users. 
+
+For the clients, there is also a [BackupPC client role](https://github.com/UdelaRInterior/ansible-backuppc-client/) that works with this
+one to configure the the client itself as well as its account in the server configured here.  
 
 Requirements
 ------------
@@ -30,17 +32,18 @@ Role Variables
 - `backuppc_server_name`: fqdn of the backup server
 - `backuppc_ssh_key_bits`: set length of ssh key pair (optional, default 2048 by Ansible)
 - `backuppc_fetch_ssh_key`: copy backkupc ssh key from server (boolean)
-- `backuppc_local_fetch_dir`: local dir where you fetch backuppc SSH public key
+- `backuppc_server_home`: local home dir of backuppc user (should be `/var/lib/backuppc`)
+- `backuppc_home_link`: if defined then `backuppc_server_home` is a symbolic link to this folder
+
 - `backuppc_language`: web interface language
 - `backuppc_Date_Format`: date format of the web interface
-- `backuppc_mysql_user`: user from mysql
-- `backuppc_group`: group of the inventory that contains the backuppc
-- `backup_group`: inventory group that contains the containers to be backed
 
 
 ### Client vars
 
-Each client configuration override global configuration.
+Each client configuration overrides global configuration.
+
+See [README of backuppc-client role](https://github.com/UdelaRInterior/ansible-backuppc-client/blob/master/README.md) for detailed client variables. 
 
 - `users_backuppc`: Users with access to the backuppc web interface 
 - `state`: (O) absent or present (default)
@@ -48,9 +51,6 @@ Each client configuration override global configuration.
 - `exclude_files:`: (O) default files (directories) list to exclude in backup
 - `xfermethod`: (O) transfer method (rsync as default)
 - `more`: (O) hash with specific key/value (usefull for custom directives)
-- `backup_mysql_dump`: determines if database backup is done (true/false)
-- `backup_config_mysql`: run the installation process (true/false)
-- `backup_local_users`: users who manage the backup ("user1,user2")
 
 (O): Optional
 
@@ -83,13 +83,12 @@ Notes
 
 ### About HTTP
 
-This role doesn't manage any webserver! You _must_ use another role to install a HTTP service _before_ this role. It doesn't manage any authentication.
+This role does now a basic installation of Apache, with htpasswd  authentication.
 
-Be careful, in Debian based systems, backuppc depends [httpd virtual package](https://packages.debian.org/jessie/httpd). If you don't install any HTTP server, Debian will install Apache2. However, you can use [my Nginx role](https://github.com/HanXHX/ansible-nginx) which is compatible with this role.
 
 ### About backups
 
-This role downloads backuppc SSH public key. You must deploy it on each clients!
+This role generates a backuppc SSH public key. The backuppc_client role deploys it on each client.
 
 Dependencies
 ------------
@@ -103,37 +102,10 @@ Example Playbook
 
 You should look at [defaults/main.yml](defaults/main.yml).
 
-### With my Nginx role
-
-```
-- hosts: backup
-  vars:
-    nginx_vhosts:
-      - name: backup.mydomain.tld
-        template: _backuppc
-		htpasswd: backuppc
-    nginx_htpasswd:
-      - name: backuppc
-        description: 'Please login'
-        users:
-          - name: hx
-            password: myPassword
-    backuppc_hosts:
-      - hostname: current-host
-        state: present
-      - hostname: removed_host
-      	state: absent
-      - hostname: oldserver
-  roles:
-    - HanXHX.nginx
-    - HanXHX.backuppc
-```
-
-### With Apache2
 
 ```
   The management of the users is done by the role and the users have their assigned passwords which can be changed with:
-  htpasswd /etc/backuppc/htpasswd usuario
+  htpasswd /etc/backuppc/htpasswd user
 ```
  
 
@@ -157,4 +129,4 @@ No crypto-currency? :star: the project is also a way of saying thank you! :sungl
 Author Information
 ------------------
 
-- Twitter: [@hanxhx_](https://twitter.com/hanxhx_)
+Original role [Emilien M](https://github.com/HanXHX) enhanced by [Víctor Torterola and Daniel Viñar](https://github.com/UdelaRInterior)

@@ -2,14 +2,20 @@
 
 backuppc_server_name: "{{ ansible_hostname }}"
 backuppc_fetch_ssh_key: false
-backuppc_local_fetch_dir: "./fetch"
+# backuppc_local_fetch_dir: "/var/lib/backuppc"  # Only for client
+
+backuppc_server_home: /var/lib/backuppc
+
+## If backuppc_home_link is defined a symbolic link is defined from backuppc_server_home to backuppc_home_link
+# backuppc_home_link:   # By default this variable is not defined
+
+
 backuppc_hosts: []
 backuppc_pre_dump: ''
 backuppc_post_dump: ''
 hostname: []
 hostname_dump: []
-backup_config_mysql: false #esta variable habilita la instalacion y configuracion de mysql 
-                    # La idea es correrlo la primera vez y pasarla a false para que no se corra mas
+
 include_files:
   - /etc
   - /var/lib

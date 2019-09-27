@@ -1,16 +1,23 @@
 ---
+## backuppc installation
 
 - name: Create symbolic link 
   file:
-    src: "/mnt/datosBackuppc"
-    dest: "/var/lib/backuppc"
+    src: "{{ backuppc_home_link }}"
+    dest: "{{ backuppc_server_home }}"
     mode: 0644
     state: link
+  when: backuppc_home_link is defined
   tags: symbolic
 
 - name: APT | Install BackupPC and few related tools
-  apt: pkg={{ item }} state=present update_cache=yes cache_valid_time=3600
-  with_items:
+  apt: 
+    pkg: '{{ packages }}'
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  vars:
+    packages:
     - backuppc
     - fcgiwrap
     - libfile-rsyncp-perl
@@ -22,7 +29,7 @@
   action: setup
   when: install.changed
 
-- name: crear usuario backuppc
+- name: create web backuppc users
   htpasswd:
     path: /etc/backuppc/htpasswd
     name: "{{ item.name }}"
@@ -34,20 +41,20 @@
   tags: create_users_backuppc
 
 - name: USER | Create SSH key for backuppc user
-  user: >
-    name=backuppc
-    generate_ssh_key=yes
-    ssh_key_bits={{ backuppc_ssh_key_bits | default (omit) }}
-    ssh_key_comment=backuppc@{{ inventory_hostname }}
+  user:
+    name: backuppc
+    generate_ssh_key: yes
+    ssh_key_bits: "{{ backuppc_ssh_key_bits | default (omit) }}"
+    ssh_key_comment: "backuppc@{{ inventory_hostname }}"
 
 - name: TEMPLATE | Global BackupPC configuration
-  template: >
-    src=etc/backuppc/config.pl.j2
-    dest='/etc/backuppc/config.pl'   
-    owner=backuppc
-    group=www-data
-    mode=0640
+  template:
+    src: etc/backuppc/config.pl.j2
+    dest: '/etc/backuppc/config.pl'   
+    owner: backuppc
+    group: www-data
+    mode: 0640
   notify: 
   - restart backuppc
   - restart apache2
-
+...
