@@ -5,7 +5,7 @@
   file:
     src: "{{ backuppc_home_link }}"
     dest: "{{ backuppc_server_home }}"
-    mode: 0644
+    mode: 0755
     state: link
   when: backuppc_home_link is defined
   tags: symbolic
