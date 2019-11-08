@@ -9,7 +9,6 @@ backuppc_server_home: /var/lib/backuppc
 ## If backuppc_home_link is defined a symbolic link is defined from backuppc_server_home to backuppc_home_link
 # backuppc_home_link:   # By default this variable is not defined
 
-
 backuppc_hosts: []
 backuppc_pre_dump: ''
 backuppc_post_dump: ''
@@ -30,6 +29,7 @@ backuppc_group: '{{ groups.backuppc }}'
 
 #
 # Global configuration
+# Configurable parameters in config.pl backuppc file
 #
 backuppc_ServerPort: -1
 backuppc_ServerMesgSecret: ''
@@ -40,6 +40,8 @@ backuppc_BackupPCNightlyPeriod: 1
 backuppc_MaxOldLogFiles: 14
 backuppc_FullPeriod: 6.97
 backuppc_IncrPeriod: 0.97
+backuppc_FullKeepCnt: 1
+# backuppc_FullKeepCnt: [4, 0, 4, 0, 0, 2]  ## 8 month history
 backuppc_PingMaxMsec: 200
 backuppc_XferLogLevel: 1
 backuppc_language: 'en'
@@ -50,4 +52,3 @@ users_backuppc: # usuarios habilitados para utilizar backuppc
 # Rsync
 backuppc_RsyncClientCmd: '$sshPath -q -x -l backuppc $host sudo $rsyncPath $argList+'
 backuppc_RsyncClientRestoreCmd: '$sshPath -q -x -l backuppc $host sudo $rsyncPath $argList+'
-
