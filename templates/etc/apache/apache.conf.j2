@@ -7,10 +7,10 @@
 <VirtualHost *:443>
 
     SSLEngine on
-    SSLCertificateFile /etc/letsencrypt/live/{{backuppc_server_name}}/cert.pem
-    SSLCertificateKeyFile /etc/letsencrypt/live/{{backuppc_server_name}}/privkey.pem
+    SSLCertificateFile {{ backuppc_apache_ssl_cert_file }}
+    SSLCertificateKeyFile {{ backuppc_apache_ssl_cert_key_file }}
 
-    ServerAdmin webmaster@localhost
+    ServerAdmin {{ backuppc_apache_email }}
     # DocumentRoot /usr/share/backuppc/cgi-bin/
 
     ErrorLog ${APACHE_LOG_DIR}/error.log

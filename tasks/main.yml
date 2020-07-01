@@ -1,7 +1,8 @@
 ---
 
-- name: INCLUDE | Install
-  include: install.yml
+- name: IMPORT_TASKS | Install BackupPC
+  import_tasks: install.yml
 
-- name: Config apache
-  include: apache.yml
+- name: IMPORT_TASKS | Config Apache2
+  import_tasks: apache.yml
+  when: backuppc_configure_apache | bool

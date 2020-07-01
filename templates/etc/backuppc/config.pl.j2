@@ -219,7 +219,7 @@ $Conf{MaxBackupPCNightlyJobs} = {{ backuppc_MaxBackupPCNightlyJobs }};
 #    $Conf{BackupPCNightlyPeriod} = 4;   # four days to complete pool check
 #                                        # (different quarter each night)
 #
-$Conf{BackupPCNightlyPeriod} = 1;
+$Conf{BackupPCNightlyPeriod} = {{ backuppc_BackupPCNightlyPeriod }};
 
 #
 # Maximum number of log files we keep around in log directory.
@@ -270,13 +270,13 @@ $Conf{Bzip2Path} = '/bin/bzip2';
 # Also, currently running backups will not be terminated when the disk
 # usage exceeds this number.
 #
-$Conf{DfMaxUsagePct} = 95;
+$Conf{DfMaxUsagePct} = {{ backuppc_DfMaxUsagePct }};
 
 #
 # How long BackupPC_trashClean sleeps in seconds between each check
 # of the trash directory.  Once every 5 minutes should be reasonable.
 #
-$Conf{TrashCleanSleepSec} = 300;
+$Conf{TrashCleanSleepSec} = {{ backuppc_TrashCleanSleepSec }};
 
 #
 # List of DHCP address ranges we search looking for PCs to backup.
@@ -312,7 +312,7 @@ $Conf{DHCPAddressRanges} = [];
 #
 # The BackupPC user.
 #
-$Conf{BackupPCUser} = 'backuppc';
+$Conf{BackupPCUser} = '{{ backuppc_server_user }}';
 
 #
 # Important installation directories:
@@ -334,11 +334,11 @@ $Conf{BackupPCUser} = 'backuppc';
 # a symbolic link to the new location, or mount the new BackupPC
 # store at the existing $Conf{TopDir} setting.
 #
-$Conf{TopDir} = '/var/lib/backuppc';
-$Conf{ConfDir} = '/etc/backuppc';
-$Conf{LogDir} = '/var/lib/backuppc/log';
-$Conf{InstallDir} = '/usr/share/backuppc';
-$Conf{CgiDir} = '/usr/share/backuppc/cgi-bin';
+$Conf{TopDir} = '{{ backuppc_server_home }}';
+$Conf{ConfDir} = '{{ backuppc_server_config_dir }}';
+$Conf{LogDir} = '{{ backuppc_LogDir }}';
+$Conf{InstallDir} = '{{ backuppc_InstallDir }}';
+$Conf{CgiDir} = '{{ backuppc_CgiDir }}';
 
 #
 # Whether BackupPC and the CGI script BackupPC_Admin verify that they
@@ -719,18 +719,36 @@ $Conf{ArchiveInfoKeepCnt} = 10;
 #       '*' => ['/myFiles', '/important'],      # these are other shares
 #    };
 #
-{% if backuppc_BackupFilesOnly is defined %}
-$Conf{BackupFilesOnly} = {
-  '*' => [
-{% for item in backuppc_BackupFilesOnly %}
-    '{{ item }}'{% if not loop.last %},{% endif %}
 
+$Conf{BackupFilesOnly} = 
+{%- if backuppc_BackupFilesOnly is defined %}
+{% if backuppc_BackupFilesOnly is string %}
+ {{ backuppc_BackupFilesOnly }};
+{%- elif backuppc_BackupFilesOnly is mapping %} {
+{%- for Share, BackupFiles in backuppc_BackupFilesOnly.items() %}
+
+  '{{ Share }}' => [
+{%- for BackupFile in BackupFiles %}
+
+      '{{ BackupFile }}'{% if not loop.last %},{% endif %}
 {% endfor %}
-  ]
+
+    ]{% if not loop.last %},{% endif %}
+{% endfor %}
+
 };
-{% elif backuppc_BackupFilesOnly is not defined %}
-$Conf{BackupFilesOnly} = {};
-{% endif %}
+{%- else %} [
+{%- for backup_files in backuppc_BackupFilesOnly %}
+
+  '{{ backup_files }}'{% if not loop.last %},{% endif %}
+{% endfor %}
+
+];
+  {%- endif %}
+{%- else %}
+ {};
+{%- endif %}
+
 
 #
 # List of directories or files to exclude from the backup.  For Smb,
@@ -798,6 +816,36 @@ $Conf{BackupFilesExclude} = {
 {% elif backuppc_BackupFilesExclude is not defined %}
 $Conf{BackupFilesExclude} = {};
 {% endif %}
+
+$Conf{BackupFilesExclude} = 
+{%- if backuppc_BackupFilesExclude is defined %}
+{% if backuppc_BackupFilesExclude is string %}
+ {{ backuppc_BackupFilesExclude }};
+{%- elif backuppc_BackupFilesExclude is mapping %} {
+{%- for Share, BackupFilesExclude in backuppc_BackupFilesExclude.items() %}
+
+  '{{ Share }}' => [
+{%- for FileExclude in BackupFilesExclude %}
+
+      '{{ FileExclude }}'{% if not loop.last %},{% endif %}
+{% endfor %}
+
+    ]{% if not loop.last %},{% endif %}
+{% endfor %}
+
+};
+{%- else %} [
+{%- for FilesExclude in backuppc_BackupFilesExclude %}
+
+  '{{ FilesExclude }}'{% if not loop.last %},{% endif %}
+{% endfor %}
+
+];
+  {%- endif %}
+{%- else %}
+ {};
+{%- endif %}
+
 
 #
 # PCs that are always or often on the network can be backed up after
@@ -921,7 +969,7 @@ $Conf{BackupZeroFilesIsFatal} = '1';
 #                to permanent media, such as tape, CDR or DVD.
 #               
 #
-$Conf{XferMethod} = 'smb';
+$Conf{XferMethod} = '{{ backuppc_XferMethod }}';
 
 #
 # Level of verbosity in Xfer log files.  0 means be quiet, 1 will give
@@ -1282,7 +1330,15 @@ $Conf{RsyncClientRestoreCmd} = '{{ backuppc_RsyncClientRestoreCmd }}';
 #     $Conf{RsyncShareName} = ['/', '/var', '/data', '/boot'];
 #
 $Conf{RsyncShareName} = [
+{%- if backuppc_RsyncShareName is defined and backuppc_RsyncShareName | length > 0 %}
+{%- for share in backuppc_RsyncShareName %}
+
+  '{{ share }}'{% if not loop.last %},{% endif %}
+{% endfor %}
+
+{% else %}
   '/'
+{% endif %}
 ];
 
 #
@@ -2049,8 +2105,8 @@ Content-Type: text/plain; charset="utf-8"
 #    $Conf{CgiAdminUsers}     = 'craig celia';
 #    --> administrative users are only craig and celia'.
 #
-$Conf{CgiAdminUserGroup} = 'backuppc';
-$Conf{CgiAdminUsers} = 'backuppc';
+$Conf{CgiAdminUserGroup} = '{{ backuppc_CgiAdminUserGroup }}';
+$Conf{CgiAdminUsers} = '{{ backuppc_CgiAdminUsers }}';
 
 #
 # URL of the BackupPC_Admin CGI script.  Used for email messages.
@@ -2066,7 +2122,7 @@ $Conf{CgiURL} = 'http://jessie-amd64/backuppc/index.cgi';
 # Currently the Language setting applies to the CGI interface and email
 # messages sent to users.  Log files and other text are still in English.
 #
-$Conf{Language} = '{{backuppc_language}}';
+$Conf{Language} = '{{ backuppc_language }}';
 
 #
 # User names that are rendered by the CGI interface can be turned
@@ -2097,7 +2153,7 @@ $Conf{CgiUserUrlCreate} = 'mailto:%s';
 # dates (MM/DD), a value of 2 uses full YYYY-MM-DD format, and zero
 # for international dates (DD/MM).
 #
-$Conf{CgiDateFormatMMDD} = '{{backuppc_Date_Format}}';
+$Conf{CgiDateFormatMMDD} = '{{ backuppc_CgiDateFormatMMDD }}';
 
 #
 # If set, the complete list of hosts appears in the left navigation
