@@ -3,11 +3,11 @@
 
 - name: FILE | Create symbolic link 
   file:
-    src: "{{ backuppc_home_link }}"
-    dest: "{{ backuppc_server_home }}"
+    src: "{{ backuppc_srv_home_link }}"
+    dest: "{{ backuppc_srv_user_home }}"
     mode: 0755
     state: link
-  when: backuppc_home_link is defined
+  when: backuppc_srv_home_link is defined
   tags: symbolic
 
 - name: APT | Install BackupPC and few related tools
@@ -25,32 +25,32 @@
     - python-passlib
     - rsync
     - ssl-cert
-  register: backuppc_install
+  register: backuppc_srv_install
 
 - name: SETUP | with ohai
   action: setup
-  when: backuppc_install.changed
+  when: backuppc_srv_install.changed
 
 - name: INCLUDE | Configure htpasswd users
   include_tasks: htpasswd_users.yml
-  loop: "{{ backuppc_server_web_users }}"
+  loop: "{{ backuppc_srv_web_users }}"
   loop_control:
-    loop_var: backuppc_server_web_user
-  tags: backuppc_config_users
+    loop_var: backuppc_srv_web_user
+  tags: backuppc_srv_config_users
 
 - name: USER | Create SSH key for backuppc user
   user:
-    name: '{{ backuppc_server_user }}'
+    name: '{{ backuppc_srv_unix_user }}'
     generate_ssh_key: yes
-    ssh_key_bits: "{{ backuppc_server_user_ssh_key_bits | default (omit) }}"
-    ssh_key_comment: "{{ backuppc_server_user }}@{{ inventory_hostname }}"
+    ssh_key_bits: "{{ backuppc_srv_user_ssh_key_bits | default (omit) }}"
+    ssh_key_comment: "{{ backuppc_srv_unix_user }}@{{ inventory_hostname }}"
 
 - name: TEMPLATE | Global BackupPC configuration
   template:
     src: etc/backuppc/config.pl.j2
-    dest: '{{ backuppc_server_config_dir }}/config.pl'   
-    owner: '{{ backuppc_server_user }}'
-    group: '{{ backuppc_server_group }}'
+    dest: '{{ backuppc_srv_config_dir }}/config.pl'   
+    owner: '{{ backuppc_srv_unix_user }}'
+    group: '{{ backuppc_srv_unix_group }}'
     mode: 0640
   notify: 
   - BackupPC_server - restart backuppc

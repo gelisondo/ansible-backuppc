@@ -13,7 +13,7 @@
     
 - name: TEMPLATE | Copy apache config
   template:
-    dest: "/etc/apache2/sites-available/{{ backuppc_server_name }}.conf"
+    dest: "/etc/apache2/sites-available/{{ backuppc_srv_server_name }}.conf"
     src: etc/apache/apache.conf.j2
     owner: root
     group: root
@@ -25,29 +25,31 @@
     path: /etc/apache2/sites-enabled/000-default.conf
     state: absent
   notify: BackupPC_server - restart apache2
-  when: backuppc_disable_apache_default_site | bool
+  when: backuppc_srv_disable_apache_default_site | bool
 
 - name: FILE | Activate custom Backuppc apache site.
   file:
-    path: "/etc/apache2/sites-enabled/{{ backuppc_server_name }}.conf"
-    src: "/etc/apache2/sites-available/{{ backuppc_server_name }}.conf"
+    path: "/etc/apache2/sites-enabled/{{ backuppc_srv_server_name }}.conf"
+    src: "/etc/apache2/sites-available/{{ backuppc_srv_server_name }}.conf"
     state: link
   notify: BackupPC_server - restart apache2
 
 - name: LINEINFILE | Allow distant access to Apache2 BackupPC interface
   lineinfile:
-    path: '{{ backuppc_server_config_dir }}/apache.conf'
-    regex: '{{ "^(\s)#?\s*(Require local.*)$" | regex_escape() }}'
-    line: '{{ "\0# \1" | regex_escape() }}'
+    path: '{{ backuppc_srv_config_dir }}/apache.conf'
+    regex: '#? ?Require local'
+    line: '                # Require local'
+    state: present
   notify: BackupPC_server - restart apache2
-  when: not backuppc_apache_local | bool
+  when: not backuppc_srv_apache_local | bool
 
 - name: LINEINFILE | Require SSL to access to Apache2 BackupPC interface
   lineinfile:
-    path: '{{ backuppc_server_config_dir }}/apache.conf'
-    regex: '{{ "^(\s)#?\s*SSLRequireSSL" | regex_escape() }}'
-    line: '{{ "\0SSLRequireSSL" | regex_escape() }}'
+    path: '{{ backuppc_srv_config_dir }}/apache.conf'
+    regex: '#?SSLRequireSSL'
+    line: '        SSLRequireSSL'
+    state: present
   notify: BackupPC_server - restart apache2
-  when: backuppc_apache_require_ssl | bool
+  when: backuppc_srv_apache_require_ssl | bool
 
 ...

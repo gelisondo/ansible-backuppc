@@ -29,14 +29,14 @@ Role Variables
 
 ### Role var
 
-- `backuppc_server_name`: fqdn of the backup server
-- `backuppc_ssh_key_bits`: set length of ssh key pair (optional, default 2048 by Ansible)
-- `backuppc_fetch_ssh_key`: copy backkupc ssh key from server (boolean)
-- `backuppc_server_home`: local home dir of backuppc user (should be `/var/lib/backuppc`)
-- `backuppc_home_link`: if defined then `backuppc_server_home` is a symbolic link to this folder
+- `backuppc_srv_server_name`: fqdn of the backup server
+- `backuppc_srv_ssh_key_bits`: set length of ssh key pair (optional, default 2048 by Ansible)
+- `backuppc_srv_fetch_ssh_key`: copy backkupc ssh key from server (boolean)
+- `backuppc_srv_user_home`: local home dir of backuppc user (should be `/var/lib/backuppc`)
+- `backuppc_srv_home_link`: if defined then `backuppc_srv_user_home` is a symbolic link to this folder
 
-- `backuppc_language`: web interface language
-- `backuppc_Date_Format`: date format of the web interface
+- `backuppc_srv_language`: web interface language
+- `backuppc_srv_Date_Format`: date format of the web interface
 
 
 ### Client vars
@@ -59,22 +59,22 @@ See [README of backuppc-client role](https://github.com/UdelaRInterior/ansible-b
 
 You should [RTFM](http://backuppc.sourceforge.net/faq/BackupPC.html) for these variables:
 
-- `backuppc_ServerPort`
-- `backuppc_ServerMesgSecret`
-- `backuppc_MaxBackups`
-- `backuppc_MaxUserBackups`
-- `backuppc_MaxBackupPCNightlyJobs`
-- `backuppc_BackupPCNightlyPeriod`
-- `backuppc_MaxOldLogFiles`
-- `backuppc_FullPeriod`
-- `backuppc_IncrPeriod`
-- `backuppc_PingMaxMsec`
-- `backuppc_RsyncClientCmd`
-- `backuppc_RsyncClientRestoreCmd`
-- `backuppc_BackupFilesOnly`
-- `backuppc_BackupFilesExclude`
-- `backuppc_XferLogLevel`
-- `backuppc_language`
+- `backuppc_srv_ServerPort`
+- `backuppc_srv_ServerMesgSecret`
+- `backuppc_srv_MaxBackups`
+- `backuppc_srv_MaxUserBackups`
+- `backuppc_srv_MaxBackupPCNightlyJobs`
+- `backuppc_srv_BackupPCNightlyPeriod`
+- `backuppc_srv_MaxOldLogFiles`
+- `backuppc_srv_FullPeriod`
+- `backuppc_srv_IncrPeriod`
+- `backuppc_srv_PingMaxMsec`
+- `backuppc_srv_RsyncClientCmd`
+- `backuppc_srv_RsyncClientRestoreCmd`
+- `backuppc_srv_BackupFilesOnly`
+- `backuppc_srv_BackupFilesExclude`
+- `backuppc_srv_XferLogLevel`
+- `backuppc_srv_language`
 
 Other global configuration can be managed (you can create issues or PR).
 
