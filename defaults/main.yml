@@ -44,8 +44,11 @@ backuppc_srv_RsyncShareName:
 # `include_files` is a badly documented legacy name of this variable
 
 ## Global configuration
-# Configurable parameters in config.pl backuppc file, see tempates/etc/backuppc/config.pl.j2 for explenations
+# Configurable parameters in config.pl backuppc file.
+# Ansible variables are similar to perl BackupPC variables, with the backuppc_srv_ prefix
+# see tempates/etc/backuppc/config.pl.j2 for explenations on the variables' roles. 
 #
+
 backuppc_srv_ServerPort: -1
 backuppc_srv_ServerMesgSecret: ''
 backuppc_srv_MaxBackups: 4

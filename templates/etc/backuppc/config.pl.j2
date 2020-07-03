@@ -727,13 +727,16 @@ $Conf{BackupFilesOnly} =
 {%- elif backuppc_srv_BackupFilesOnly is mapping %} {
 {%- for Share, BackupFiles in backuppc_srv_BackupFilesOnly.items() %}
 
-  '{{ Share }}' => [
+  '{{ Share }}' =>
+{%- if BackupFiles is string %} {{ BackupFiles }}
+{%- else %} [
 {%- for BackupFile in BackupFiles %}
 
       '{{ BackupFile }}'{% if not loop.last %},{% endif %}
 {% endfor %}
 
-    ]{% if not loop.last %},{% endif %}
+    ]
+{%- endif %}{% if not loop.last %},{% endif %}
 {% endfor %}
 
 };
@@ -744,7 +747,7 @@ $Conf{BackupFilesOnly} =
 {% endfor %}
 
 ];
-  {%- endif %}
+{%- endif %}
 {%- else %}
  {};
 {%- endif %}
@@ -804,18 +807,6 @@ $Conf{BackupFilesOnly} =
 #       '*' => ['/junk', '/dont_back_this_up'], # these are for other shares
 #    };
 #
-{% if backuppc_srv_BackupFilesExclude is defined %}
-$Conf{BackupFilesExclude} = {
-  '*' => [
-{% for item in backuppc_srv_BackupFilesExclude %}
-    '{{ item }}'{% if not loop.last %},{% endif %}
-
-{% endfor %}
-  ]
-};
-{% elif backuppc_srv_BackupFilesExclude is not defined %}
-$Conf{BackupFilesExclude} = {};
-{% endif %}
 
 $Conf{BackupFilesExclude} = 
 {%- if backuppc_srv_BackupFilesExclude is defined %}
@@ -824,13 +815,16 @@ $Conf{BackupFilesExclude} =
 {%- elif backuppc_srv_BackupFilesExclude is mapping %} {
 {%- for Share, BackupFilesExclude in backuppc_srv_BackupFilesExclude.items() %}
 
-  '{{ Share }}' => [
+  '{{ Share }}' =>
+{%- if BackupFilesExclude is string %} {{ BackupFilesExclude }}
+{%- else %} [
 {%- for FileExclude in BackupFilesExclude %}
 
       '{{ FileExclude }}'{% if not loop.last %},{% endif %}
 {% endfor %}
 
-    ]{% if not loop.last %},{% endif %}
+    ]
+{%- endif %}{% if not loop.last %},{% endif %}
 {% endfor %}
 
 };
@@ -841,7 +835,7 @@ $Conf{BackupFilesExclude} =
 {% endfor %}
 
 ];
-  {%- endif %}
+{%- endif %}
 {%- else %}
  {};
 {%- endif %}
@@ -1329,6 +1323,7 @@ $Conf{RsyncClientRestoreCmd} = '{{ backuppc_srv_RsyncClientRestoreCmd }}';
 #
 #     $Conf{RsyncShareName} = ['/', '/var', '/data', '/boot'];
 #
+{# backuppc_srv_RsyncShareName is a list of folders (linux, rsync method) #}
 $Conf{RsyncShareName} = [
 {%- if backuppc_srv_RsyncShareName is defined and backuppc_srv_RsyncShareName | length > 0 %}
 {%- for share in backuppc_srv_RsyncShareName %}
@@ -1728,6 +1723,9 @@ $Conf{FixedIPNetBiosNameCheck} = '0';
 #     $Conf{PingPath} = '/bin/echo';
 #
 $Conf{PingPath} = '/bin/ping';
+{% if ansible_facts['all_ipv6_addresses'] | length > 0 %}
+$Conf{Ping6Path} = '/bin/ping6';
+{% endif %}
 
 #
 # Ping command.  The following variables are substituted at run-time:

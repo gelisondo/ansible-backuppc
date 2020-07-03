@@ -45,6 +45,12 @@
     ssh_key_bits: "{{ backuppc_srv_user_ssh_key_bits | default (omit) }}"
     ssh_key_comment: "{{ backuppc_srv_unix_user }}@{{ inventory_hostname }}"
 
+- name: see facts
+  debug:
+    var: ansible_facts
+  
+- pause: 
+
 - name: TEMPLATE | Global BackupPC configuration
   template:
     src: etc/backuppc/config.pl.j2

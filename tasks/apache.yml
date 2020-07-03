@@ -41,7 +41,11 @@
     line: '                # Require local'
     state: present
   notify: BackupPC_server - restart apache2
-  when: not backuppc_srv_apache_local | bool
+  when: 
+  - not backuppc_srv_apache_local | bool
+  - ansible_facts['distribution'] == "Debian"
+  - ansible_facts['distribution_major_version'] | int >= 10
+
 
 - name: LINEINFILE | Require SSL to access to Apache2 BackupPC interface
   lineinfile:
