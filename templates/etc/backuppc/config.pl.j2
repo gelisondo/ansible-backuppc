@@ -48,7 +48,7 @@
 #
 $ENV{'PATH'} = '/bin:/usr/bin';
 delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
-$Conf{ServerHost} = '{{ backuppc_srv_server_name }}';
+$Conf{ServerHost} = '{{ backuppc_srv_ServerHost }}';
 chomp($Conf{ServerHost});
 
 #
@@ -392,7 +392,7 @@ $Conf{ServerInitdStartCmd} = '';
 
 
 ###########################################################################
-# What to backup and when to do it
+# 
 # (can be overridden in the per-PC config.pl)
 ###########################################################################
 #
@@ -622,7 +622,7 @@ $Conf{IncrLevels} = [
 # In versions prior to 3.0 Backups were disabled by setting
 # $Conf{FullPeriod} to -1 or -2.
 #
-$Conf{BackupsDisable} = 0;
+$Conf{BackupsDisable} = {{ backuppc_srv_BackupsDisable }};
 
 #
 # A failed full backup is saved as a partial backup.  The rsync
@@ -1966,7 +1966,7 @@ $Conf{EMailNotifyMinDays} = '2.5';
 # handler this is either a plain name (eg: "admin") or a fully-qualified
 # name (eg: "admin@mydomain.com").
 #
-$Conf{EMailFromUserName} = 'backuppc';
+$Conf{EMailFromUserName} = '{{ backuppc_srv_EMailFromUserName }}';
 
 #
 # Destination address to an administrative user who will receive a
@@ -1975,7 +1975,7 @@ $Conf{EMailFromUserName} = 'backuppc';
 # handler this is either a plain name (eg: "admin") or a fully-qualified
 # name (eg: "admin@mydomain.com").
 #
-$Conf{EMailAdminUserName} = 'backuppc';
+$Conf{EMailAdminUserName} = '{{ backuppc_srv_EMailAdminUserName }}';
 
 #
 # Destination domain name for email sent to users.  By default
@@ -1986,7 +1986,7 @@ $Conf{EMailAdminUserName} = 'backuppc';
 #
 # With this setting user email will be set to 'user@mydomain.com'.
 #
-$Conf{EMailUserDestDomain} = '';
+$Conf{EMailUserDestDomain} = '{{ backuppc_srv_EMailUserDestDomain }}';
 
 #
 # This subject and message is sent to a user if their PC has never been
@@ -2109,7 +2109,7 @@ $Conf{CgiAdminUsers} = '{{ backuppc_srv_CgiAdminUsers }}';
 #
 # URL of the BackupPC_Admin CGI script.  Used for email messages.
 #
-$Conf{CgiURL} = 'http://jessie-amd64/backuppc/index.cgi';
+$Conf{CgiURL} = '{{ backuppc_srv_CgiURL }}';
 
 #   
 # Language to use.  See lib/BackupPC/Lang for the list of supported

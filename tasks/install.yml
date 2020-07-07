@@ -1,30 +1,12 @@
 ---
-## backuppc installation
-
-- name: FILE | Create symbolic link 
-  file:
-    src: "{{ backuppc_srv_home_link }}"
-    dest: "{{ backuppc_srv_user_home }}"
-    mode: 0755
-    state: link
-  when: backuppc_srv_home_link is defined
-  tags: symbolic
+## backuppc server installation tasks
 
 - name: APT | Install BackupPC and few related tools
   apt: 
-    pkg: '{{ packages }}'
+    pkg: '{{ backuppc_srv_packages }}'
     state: present
     update_cache: yes
     cache_valid_time: 3600
-  vars:
-    packages:
-    - backuppc
-    - fcgiwrap
-    - libfile-rsyncp-perl
-    - ohai
-    - python-passlib
-    - rsync
-    - ssl-cert
   register: backuppc_srv_install
 
 - name: SETUP | with ohai
@@ -44,12 +26,6 @@
     generate_ssh_key: yes
     ssh_key_bits: "{{ backuppc_srv_user_ssh_key_bits | default (omit) }}"
     ssh_key_comment: "{{ backuppc_srv_unix_user }}@{{ inventory_hostname }}"
-
-- name: see facts
-  debug:
-    var: ansible_facts
-  
-- pause: 
 
 - name: TEMPLATE | Global BackupPC configuration
   template:
