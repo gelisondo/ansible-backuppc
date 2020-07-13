@@ -37,7 +37,7 @@ backuppc_srv_ServerHost: '{{ backuppc_srv_server_name }}'
 
 #### What to backup and when to do it
 
-# Default list of shares, or devices, or simply folders (in linux) to backup from a client
+# Default list of system folders to backup from a client
 backuppc_srv_RsyncShareName: 
 - /etc    
 - /var
@@ -54,10 +54,11 @@ backuppc_srv_RsyncShareName:
 #
 # backuppc_srv_BackupFilesOnly: 
 #
-# `include_files` is a badly documented legacy name of this variable
+# See README.md for more explenations and example
 
 # List of directories or files to exclude from the backup: 
 # backuppc_srv_BackupFilesExclude: 
+#
 # Syntax is similar than backuppc_srv_BackupFilesOnly
 
 ## Global configuration

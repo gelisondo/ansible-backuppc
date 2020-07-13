@@ -57,7 +57,7 @@ The following parameters can be overwritten in a per client bases. See [`backupp
 ```
 Note: as stated above, only rsync is considered as transfer method, so we don't mention `SmbShareName`, `TarShareName`, other similar parameters, and related. 
 
-- `backuppc_srv_BackupFilesOnly`: List of directories or files to include in backups. This can be set to a string, a list of strings, or, in the case of multiple shares, a dict of strings or lists. A dict is used to give a list of directories or files to backup for each share (the share name is the key). If a hash is used, a special key `"*"` means it applies to all shares that don't have a specific entry.
+- `backuppc_srv_BackupFilesOnly`: List of directories or files to include in backups. This can be set to a string, a list of strings, or, in the case of multiple shares, a dict of strings or lists. A dict is used to give a list of directories or files to backup for each share (the share name is the key). If a dict is used, a special key `"*"` means it applies to all shares that don't have a specific entry.
 
 For instance, the following configuration parameters: 
 ```
@@ -66,15 +66,15 @@ backuppc_RsyncShareName:
 - /var/opt/gitlab
 
 backuppc_srv_BackupFilesOnly:
-  # Archivos de configuración de la instancia:
+  # Configuration archives fo GitLab instance:
   "/etc/gitlab":
     - /gitlab.rb
     - /gitlab-secrets.json
-  # Archivo de respaldo
+  # Gotlab backup file
   "/var/opt/gitlab":
     - /backups/dump_backuppc_gitlab_backup.tar
 ```
-Will perform the backup of the three needed file of a GitLab instance. (`dump_backuppc_gitlab_backup.tar` is built by a script just before the dump, see [`backuppc_client` role's documentation](https://github.com/UdelaRInterior/ansible-backuppc-client/blob/master/README.md#clients-backup-configuration-in-the-server)
+will perform the backup of the three needed file of a GitLab instance. (`dump_backuppc_gitlab_backup.tar` is built by a script just before the dump, see [`backuppc_client` role's documentation](https://github.com/UdelaRInterior/ansible-backuppc-client/blob/master/README.md#clients-backup-configuration-in-the-server)
 
 - `backuppc_srv_RsyncShareName`: List of directories or files to exclude from the backup. Syntax is similar than `backuppc_srv_BackupFilesOnly`.
 
