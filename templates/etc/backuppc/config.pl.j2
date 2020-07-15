@@ -723,7 +723,7 @@ $Conf{ArchiveInfoKeepCnt} = 10;
 $Conf{BackupFilesOnly} = 
 {%- if backuppc_srv_BackupFilesOnly is defined %}
 {% if backuppc_srv_BackupFilesOnly is string %}
- {{ backuppc_srv_BackupFilesOnly }};
+ "{{ backuppc_srv_BackupFilesOnly }}";
 {%- elif backuppc_srv_BackupFilesOnly is mapping %} {
 {%- for Share, BackupFiles in backuppc_srv_BackupFilesOnly.items() %}
 
@@ -811,7 +811,7 @@ $Conf{BackupFilesOnly} =
 $Conf{BackupFilesExclude} = 
 {%- if backuppc_srv_BackupFilesExclude is defined %}
 {% if backuppc_srv_BackupFilesExclude is string %}
- {{ backuppc_srv_BackupFilesExclude }};
+ "{{ backuppc_srv_BackupFilesExclude }}";
 {%- elif backuppc_srv_BackupFilesExclude is mapping %} {
 {%- for Share, BackupFilesExclude in backuppc_srv_BackupFilesExclude.items() %}
 
