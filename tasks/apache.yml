@@ -18,6 +18,7 @@
     owner: root
     group: root
     mode: "0644"
+    backup: yes
   notify: BackupPC_server - restart apache2
 
 - name: FILE | Remove default apache2 site.
@@ -34,26 +35,29 @@
     state: link
   notify: BackupPC_server - restart apache2
 
-- name: LINEINFILE | Allow distant access to Apache2 BackupPC interface
-  lineinfile:
-    path: '{{ backuppc_srv_config_dir }}/apache.conf'
-    regex: '#? ?Require local'
-    line: '                # Require local'
-    state: present
-  notify: BackupPC_server - restart apache2
-  when: 
-  - not backuppc_srv_apache_local | bool
-  - ansible_facts['distribution'] == "Debian"
-  - ansible_facts['distribution_major_version'] | int >= 10
-
-
 - name: LINEINFILE | Require SSL to access to Apache2 BackupPC interface
   lineinfile:
     path: '{{ backuppc_srv_config_dir }}/apache.conf'
-    regex: '#?SSLRequireSSL'
-    line: '        SSLRequireSSL'
+    backrefs: yes
+    regexp: '^(\s*)#?SSLRequireSSL$'
+    line: '\1SSLRequireSSL'
+    backup: yes
     state: present
   notify: BackupPC_server - restart apache2
   when: backuppc_srv_apache_require_ssl | bool
+
+- name: LINEINFILE | Configure distant access to Apache2 BackupPC interface
+  lineinfile:
+    path: '{{ backuppc_srv_config_dir }}/apache.conf'
+    backrefs: yes
+    regexp: '(\s*)(# |)Require (ip|local)'
+
+    line: "\\1{{ '# ' if not backuppc_srv_apache_access_control }}Require {{ backuppc_srv_apache_Require if backuppc_srv_apache_Require is defined else 'local' }}"
+    backup: yes
+    state: present
+  notify: BackupPC_server - restart apache2
+  when:
+  - ansible_facts['distribution'] == "Debian"
+  - ansible_facts['distribution_major_version'] | int >= 10
 
 ...

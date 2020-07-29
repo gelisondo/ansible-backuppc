@@ -101,8 +101,8 @@ backuppc_srv_BackupsDisable: 0
 # Other possible values are 1: automatic backup disable, manual backup ok, 2: no backup at all 
 
 # Rsync default commands to backup and restore a host
-backuppc_srv_RsyncClientCmd: '$sshPath -x -q -l {{ backuppc_client_user }} $host sudo $rsyncPath $argList+'
-backuppc_srv_RsyncClientRestoreCmd: '$sshPath -q -x -l {{ backuppc_client_user }} $host sudo $rsyncPath $argList+'
+backuppc_srv_RsyncClientCmd: '$sshPath -x -q -l {{ backuppc_srv_unix_user }} $host sudo $rsyncPath $argList+'
+backuppc_srv_RsyncClientRestoreCmd: '$sshPath -q -x -l {{ backuppc_srv_unix_user }} $host sudo $rsyncPath $argList+'
 
 backuppc_srv_PingMaxMsec: 200
 # Transer Method for backups. Possible values: smb, rsync, rsyncd, tar, archive. Only rsync is tested in the role
@@ -159,28 +159,33 @@ backuppc_srv_web_users: []
 ## Apache2 parameters
 # Flag, whether to configure apache2 or not 
 backuppc_srv_configure_apache: true
+
 # Flag to disable the default Apache2 VirtualHost (apache site)
 backuppc_srv_disable_apache_default_site: true
 
 # e-mail configured in Apache2 VirtualHosts
 backuppc_srv_apache_email: 'webmaster@{{ ansible_fqdn }}'
 
+# Flag to force https to access /backuppc CGI alias
+backuppc_srv_apache_require_ssl: true
+
 # Configuration of SSLCertificateFile and SSLCertificateKeyFile for Certbot generated certificates
 
-# A flag as option automatically congfigure Certbot certificates or self-signed snakeoil pre-installed certs  
-backuppc_srv_apache_ssl_certbot: true 
-# if you use certbot to generate SSL certificates for Apache2 (eventually with an appropriate Ansible role) let this flag is true. 
-# if you want to use Apache2 with pre-generated snakeoil certificates, set it to false 
+# Flag as option automatically congfigure Certbot certificates or self-signed snakeoil pre-installed certs  
+backuppc_srv_apache_ssl_certbot: false
+# if you use certbot to generate SSL certificates for Apache2 (eventually with an appropriate Ansible role) put this flag to true. 
+# if you want to use Apache2 with pre-generated snakeoil certificates, let it as false 
 
 # Previous flag defines the following variables for Apache configuration of ssl certificates
 # You can overwrithe these variables with custom values, in which case porevious flag will be unuseful
 backuppc_srv_apache_ssl_cert_file: "{{ '/etc/letsencrypt/live/' ~ backuppc_srv_server_name ~ '/cert.pem' if backuppc_srv_apache_ssl_certbot else '/etc/ssl/certs/ssl-cert-snakeoil.pem' }}"
 backuppc_srv_apache_ssl_cert_key_file: "{{ '/etc/letsencrypt/live/' ~ backuppc_srv_server_name ~ '/privkey.pem' if backuppc_srv_apache_ssl_certbot else '/etc/ssl/private/ssl-cert-snakeoil.key' }}"
 
-## BackupPC Apache2 confoguration parameters
-# Flag to restrain web access (new security configuration in Debian buster)
-backuppc_srv_apache_local: false
-# Flag to force https to access /backuppc CGI alias
-backuppc_srv_apache_require_ssl: true
+# Access control parameters
+backuppc_srv_apache_access_control: true 
+# backuppc_srv_apache_Require: define this variable as the parameters of a Require Apache2 directive 
+# See: https://httpd.apache.org/docs/2.4/mod/mod_authz_host.html#requiredirectives
+# For instance, to limit the access to your IPv4 and IPv6 network with: 
+# backuppc_srv_apache_Require: "ip 172.30 2001:db8:3::/48"
 
 ...

@@ -1,5 +1,12 @@
 # Change log of [ansible-backuppc-server](https://github.com/UdelaRInterior/ansible-backuppc) role
 
+## [3.1.0](https://github.com/UdelaRInterior/ansible-backuppc/releases/tag/3.1.0), by @ulvida
+- Default values and Access Control
+
+## [3.0.1](https://github.com/UdelaRInterior/ansible-backuppc/releases/tag/3.0.1), by @ulvida
+- Template error for string in BackupFilesOnly
+- Update README and comments
+
 ## [3.0.0](https://github.com/UdelaRInterior/ansible-backuppc/releases/tag/3.0.0), by @ulvida
 
 - refactor of all variables under `backuppc_srv_*` namespace.

@@ -15,7 +15,7 @@ This role installs and configures backuppc debian package, including ther creati
 Notes
 ----
 
-- Contrairly to the backuppc debian package, the default values of the role let BackupPC with an https authentiucation, but widely opened, as far as Apache is concerned. You are **strongly** advised to install a fireall that protects your backup server from the wide Internet. If not, at least turn the configuration `backuppc_srv_apache_local` to true, and access the web interface with an ssh tunnel. 
+- Contrairly to the backuppc debian package, the default values of the role let BackupPC with an https authentication, but widely opened, as far as Apache is concerned. You are **strongly** advised to install a fireall that protects your backup server from the wide Internet. If not, at least turn the configuration `backuppc_srv_apache_local` to true, and access the web interface with an ssh tunnel. 
 
 - The role can now handle most useful backuppc parameters but, at this time, it is designed and developed to configure backups only via rsync transfer method, with its default transport ssh ('rsync' for `XferMethod` BackupPC parameter).
 
@@ -49,7 +49,7 @@ The role's variables are named with the namespace prefix `backuppc_srv_` followe
 The following parameters can be overwritten in a per client bases. See [`backuppc_client` role](https://github.com/UdelaRInterior/ansible-backuppc-client/blob/master/README.md)
 
 - `backuppc_srv_RsyncShareName`: List of folders of the client to backup. An rsync will be performed by the server into the client. We advise you to always set your own value, but default value is: 
-```
+```yaml
 - /etc    
 - /var
 - /home
@@ -60,7 +60,7 @@ Note: as stated above, only rsync is considered as transfer method, so we don't 
 - `backuppc_srv_BackupFilesOnly`: List of directories or files to include in backups. This can be set to a string, a list of strings, or, in the case of multiple shares, a dict of strings or lists. A dict is used to give a list of directories or files to backup for each share (the share name is the key). If a dict is used, a special key `"*"` means it applies to all shares that don't have a specific entry.
 
 For instance, the following configuration parameters: 
-```
+```yaml
 backuppc_RsyncShareName:
 - /etc/gitlab
 - /var/opt/gitlab
@@ -117,7 +117,7 @@ See also [README of backuppc-client role](https://github.com/UdelaRInterior/ansi
 Usernames and their password hashcode will be configured in the `/etc/backuppc/htpasswd/` of the host. 
 
 An htpasswd hash code for a user and a password can be obtaind running: 
-```
+```bash
 htpasswd -n user 
 ```
 htpasswd utility is installed in linux with `apache2-utils` debian package. 
@@ -137,17 +137,22 @@ In [`backuppc_client` role](https://github.com/UdelaRInterior/ansible-backuppc-c
 The role can user either valide certificates generated elsewhere by Certbot, or the `ssl-certs` package's self-signed certificate.    
 Configuration of SSLCertificateFile and SSLCertificateKeyFile for 
 
-- `backuppc_srv_apache_ssl_certbot`: A flag to choose the certificates to configure in  Apache VHost: (Default value: `true`):
-  - if you use certbot to generate SSL certificates for Apache2 (eventually with an appropriate Ansible role) let this flag is true. The role will search the SSL certificate and key in tjhe folder `/etc/letsencrypt/live/{{ backuppc_srv_server_name  }}`.
-  - if you want to use Apache2 with pre-generated snakeoil certificates, set it to false 
+- `backuppc_srv_apache_require_ssl`: Flag to force https when accessing /backuppc CGI alias (Default: true)
+
+- `backuppc_srv_apache_ssl_certbot`: A flag to choose the certificates to configure in Apache VHost (Default value: `false`):
+  - if you use certbot to generate SSL certificates for Apache2 (eventually with an appropriate Ansible role) set this flag to true. The role will search the SSL certificate and key in tjhe folder `/etc/letsencrypt/live/{{ backuppc_srv_server_name  }}`.
+  - if you want to use Apache2 with pre-generated snakeoil certificates, let it as false 
 
 Previous flag defines the variables `backuppc_srv_apache_ssl_cert_file` and `backuppc_srv_apache_ssl_cert_key_file` used for Apache configuration of ssl certificates. You can overwrithe these variables with custom values, in which case porevious flag will be unuseful.
 
-## BackupPC Apache2 confoguration parameters
+## Access control
 
-- `backuppc_srv_apache_local`:  Flag to restrain web access only to localhost (new security configuration in Debian buster) (Default value: `false`, access is open outside the host, firewall is recommended!!)
-# 
-- `backuppc_srv_apache_require_ssl`: Flag to force https when accessing /backuppc CGI alias (Default: true)
+- `backuppc_srv_apache_access_control`: a flag to configure Require directives hereafter (default: `true`)
+- `backuppc_srv_apache_Require`: the value of [Apache Require directive](https://httpd.apache.org/docs/2.4/mod/mod_authz_host.html#requiredirectives) to restrict accss if the previous flag is set. By default, access is restricted to local host (you must access your BackupPC with an ssh tunnel). You can for example limit the access to your IPv4 and IPv6 network with: 
+```yaml
+backuppc_srv_apache_Require: "ip 172.30 2001:db8:3::/48"
+```
+We suggest you however to install a firweall that protects your backup server from the wide Internet. If not, at least turn the configuration `backuppc_srv_apache_local` to true, and access the web interface with an ssh tunnel. 
 
 Notes
 -----
