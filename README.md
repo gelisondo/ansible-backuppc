@@ -15,7 +15,11 @@ This role installs and configures backuppc debian package, including ther creati
 Notes
 ----
 
-- Contrairly to the backuppc debian package, the default values of the role let BackupPC with an https authentication, but widely opened, as far as Apache is concerned. You are **strongly** advised to install a fireall that protects your backup server from the wide Internet. If not, at least turn the configuration `backuppc_srv_apache_local` to true, and access the web interface with an ssh tunnel. 
+- backuppc debian package has changed its behaviour in buster, and now the web interface of BackupPC, morover its https authentication, is only available on localhost. Te role adopts this new security feature, and makes it configurable.  With default values of the role you will need to find a way to acces from the host itsef, for instance with an ssh tunnel: 
+```
+ssh -L 8443:localhost:443 bacuppc.domain.org
+``` 
+And then you access from a browser the URL https://localhost:8443/backuppc/
 
 - The role can now handle most useful backuppc parameters but, at this time, it is designed and developed to configure backups only via rsync transfer method, with its default transport ssh ('rsync' for `XferMethod` BackupPC parameter).
 
