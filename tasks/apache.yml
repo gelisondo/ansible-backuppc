@@ -11,7 +11,7 @@
   loop_control:
     loop_var: module
     
-- name: TEMPLATE | Copy apache config
+- name: TEMPLATE | Copy apache config on Debian
   template:
     dest: "/etc/apache2/sites-available/{{ backuppc_srv_server_name }}.conf"
     src: etc/apache/apache.conf.j2
@@ -19,6 +19,18 @@
     group: root
     mode: "0644"
     backup: yes
+  when: ansible_facts['distribution'] == "Debian"
+  notify: BackupPC_server - restart apache2
+
+- name: TEMPLATE | Copy apache config on Ubuntu
+  template:
+    dest: "/etc/backuppc/apache.conf"
+    src: etc/apache/apache.conf.Ubuntu.j2
+    owner: root
+    group: root
+    mode: "0644"
+    backup: yes
+  when: ansible_facts['distribution'] == "Ubuntu"
   notify: BackupPC_server - restart apache2
 
 - name: FILE | Remove default apache2 site.
@@ -26,7 +38,9 @@
     path: /etc/apache2/sites-enabled/000-default.conf
     state: absent
   notify: BackupPC_server - restart apache2
-  when: backuppc_srv_disable_apache_default_site | bool
+  when:
+  - ansible_facts['distribution'] == "Debian" and backuppc_srv_disable_apache_default_site | bool
+
 
 - name: FILE | Activate custom Backuppc apache site.
   file:
@@ -34,6 +48,7 @@
     src: "/etc/apache2/sites-available/{{ backuppc_srv_server_name }}.conf"
     state: link
   notify: BackupPC_server - restart apache2
+  when: ansible_facts['distribution'] == "Debian"
 
 - name: LINEINFILE | Require SSL to access to Apache2 BackupPC interface
   lineinfile:
@@ -44,7 +59,9 @@
     backup: yes
     state: present
   notify: BackupPC_server - restart apache2
-  when: backuppc_srv_apache_require_ssl | bool
+  when:
+  - ansible_facts['distribution'] == "Debian"
+  - backuppc_srv_apache_require_ssl | bool
 
 - name: LINEINFILE | Configure distant access to Apache2 BackupPC interface
   lineinfile:

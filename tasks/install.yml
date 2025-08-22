@@ -7,7 +7,7 @@
     state: present
     update_cache: yes
     cache_valid_time: 3600
-  when: ansible_os_family == 'Debian'
+  when: ansible_distribution == 'Debian'
   register: backuppc_srv_install_debian
 
 - name: APT | Install BackupPC and few related tools Ubuntu
@@ -16,13 +16,13 @@
     state: present
     update_cache: yes
     cache_valid_time: 3600
-  when: ansible_os_family == 'Ubuntu'
+  when: ansible_distribution == 'Ubuntu'
   register: backuppc_srv_install_ubuntu
 
 - name: SETUP | with ohai
   action: setup
   when: backuppc_srv_install_debian.changed or 
-        backuppc_srv_isntall_ubuntu.changed
+        backuppc_srv_install_ubuntu.changed
 
 - name: INCLUDE | Configure htpasswd users
   include_tasks: htpasswd_users.yml
@@ -38,26 +38,14 @@
     ssh_key_bits: "{{ backuppc_srv_user_ssh_key_bits | default (omit) }}"
     ssh_key_comment: "{{ backuppc_srv_unix_user }}@{{ inventory_hostname }}"
 
-- name: TEMPLATE | Global BackupPC configuration
+- name: TEMPLATE | Global BackupPC configuration for Debian OS
   template:
     src: etc/backuppc/config.pl.j2
     dest: '{{ backuppc_srv_config_dir }}/config.pl'   
     owner: '{{ backuppc_srv_unix_user }}'
     group: '{{ backuppc_srv_unix_group }}'
     mode: 0640
-  when: ansible_os_family == 'Debian'
-  notify: 
-  - BackupPC_server - restart backuppc
-  - BackupPC_server - restart apache2
-
-- name: TEMPLATE | Global BackupPC configuration for Debian
-  template:
-    src: etc/backuppc/config.pl.j2
-    dest: '{{ backuppc_srv_config_dir }}/config.pl'   
-    owner: '{{ backuppc_srv_unix_user }}'
-    group: '{{ backuppc_srv_unix_group }}'
-    mode: 0640
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts['distribution'] == "Debian"
   notify: 
   - BackupPC_server - restart backuppc
   - BackupPC_server - restart apache2
@@ -70,7 +58,7 @@
     owner: '{{ backuppc_srv_unix_user }}'
     group: '{{ backuppc_srv_unix_group }}'
     mode: 0640
-  when: ansible_os_family == 'Ubuntu'
+  when: ansible_facts['distribution'] == "Ubuntu"
   notify: 
   - BackupPC_server - restart backuppc
   - BackupPC_server - restart apache2

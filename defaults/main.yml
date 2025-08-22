@@ -82,6 +82,7 @@ backuppc_srv_DfMaxUsagePct: 95
 backuppc_srv_TrashCleanSleepSec: 300
 # Several directories needed
 backuppc_srv_LogDir: /var/lib/backuppc/log
+backuppc_srv_RunDir: /run/backuppc
 backuppc_srv_InstallDir: /usr/share/backuppc
 backuppc_srv_CgiDir: /usr/share/backuppc/cgi-bin
 

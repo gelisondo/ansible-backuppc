@@ -14,6 +14,7 @@ backuppc_srv_packages_ubuntu:
 - ohai
 - rsync
 - ssl-cert
+- python3-passlib
 
 
 ...
