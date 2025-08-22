@@ -6,7 +6,6 @@ backuppc_srv_packages:
 - fcgiwrap
 - libfile-rsyncp-perl
 - ohai
-- python-passlib
 - rsync
 - ssl-cert
 
