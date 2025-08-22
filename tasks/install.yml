@@ -1,17 +1,28 @@
 ---
 ## backuppc server installation tasks
 
-- name: APT | Install BackupPC and few related tools
+- name: APT | Install BackupPC and few related tools Debian
   apt: 
-    pkg: '{{ backuppc_srv_packages }}'
+    pkg: '{{ backuppc_srv_packages_debian }}'
     state: present
     update_cache: yes
     cache_valid_time: 3600
-  register: backuppc_srv_install
+  when: ansible_os_family == 'Debian'
+  register: backuppc_srv_install_debian
+
+- name: APT | Install BackupPC and few related tools Ubuntu
+  apt: 
+    pkg: '{{ backuppc_srv_packages_ubuntu }}'
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == 'Ubuntu'
+  register: backuppc_srv_install_ubuntu
 
 - name: SETUP | with ohai
   action: setup
-  when: backuppc_srv_install.changed
+  when: backuppc_srv_install_debian.changed or 
+        backuppc_srv_isntall_ubuntu.changed
 
 - name: INCLUDE | Configure htpasswd users
   include_tasks: htpasswd_users.yml
@@ -34,7 +45,34 @@
     owner: '{{ backuppc_srv_unix_user }}'
     group: '{{ backuppc_srv_unix_group }}'
     mode: 0640
+  when: ansible_os_family == 'Debian'
   notify: 
   - BackupPC_server - restart backuppc
   - BackupPC_server - restart apache2
+
+- name: TEMPLATE | Global BackupPC configuration for Debian
+  template:
+    src: etc/backuppc/config.pl.j2
+    dest: '{{ backuppc_srv_config_dir }}/config.pl'   
+    owner: '{{ backuppc_srv_unix_user }}'
+    group: '{{ backuppc_srv_unix_group }}'
+    mode: 0640
+  when: ansible_os_family == 'Debian'
+  notify: 
+  - BackupPC_server - restart backuppc
+  - BackupPC_server - restart apache2
+
+
+- name: TEMPLATE | Global BackupPC configuration for Ubuntu
+  template:
+    src: etc/backuppc/config.pl.Ubuntu.j2
+    dest: '{{ backuppc_srv_config_dir }}/config.pl'   
+    owner: '{{ backuppc_srv_unix_user }}'
+    group: '{{ backuppc_srv_unix_group }}'
+    mode: 0640
+  when: ansible_os_family == 'Ubuntu'
+  notify: 
+  - BackupPC_server - restart backuppc
+  - BackupPC_server - restart apache2
+
 ...

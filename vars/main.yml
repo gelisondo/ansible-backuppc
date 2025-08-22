@@ -1,12 +1,19 @@
 ---
 # backuppc_server role's variables 
 
-backuppc_srv_packages:
+backuppc_srv_packages_debian:
 - backuppc
 - fcgiwrap
 - libfile-rsyncp-perl
 - ohai
 - rsync
 - ssl-cert
+
+backuppc_srv_packages_ubuntu:
+- backuppc
+- ohai
+- rsync
+- ssl-cert
+
 
 ...
