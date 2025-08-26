@@ -1,4 +1,10 @@
 ---
+# List to add With_list_Acces
+#with_list_acces_backuppc:
+#  - 192.168.1.0/24
+#  - 172.16.0.23/32
+
+
 # Defaults' variables of role backuppc_server, with default values
 
 # backuppc_server role variables' namespace is now: `backuppc_srv_*`
