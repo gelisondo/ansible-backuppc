@@ -1187,8 +1187,8 @@ $Conf{TarShareName} = '/';
 # Note: all Cmds are executed directly without a shell, so the prog name
 # needs to be a full path and you can't include shell syntax like
 # redirection and pipes; put that in a script if you need it.
-#
-$Conf{TarClientCmd} = '$sshPath -q -x -n -l root $host env LC_ALL=C $tarPath -c -v -f - -C $shareName+ --totals';
+## Agregar Variable en ves de root 
+$Conf{TarClientCmd} = '$sshPath -q -x -n -l {{ backuppc_srv_unix_user }} $host env LC_ALL=C $tarPath -c -v -f - -C $shareName+ --totals';
 
 #
 # Extra tar arguments for full backups.  Several variables are substituted at
@@ -1248,7 +1248,7 @@ $Conf{TarIncrArgs} = '--newer=$incrDate+ $fileList+';
 # redirection and pipes; put that in a script if you need it.
 #
 $Conf{TarClientRestoreCmd} =
-    '$sshPath -q -x -l root $host'
+    '$sshPath -q -x -l {{ backuppc_srv_unix_user }} $host'
   . ' env LC_ALL=C $tarPath -x -p --numeric-owner --same-owner'
   . ' -v -f - -C $shareName+';
 
